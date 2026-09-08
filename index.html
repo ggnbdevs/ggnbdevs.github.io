@@ -1,0 +1,809 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>/GoROMS — custom ROM directory</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --deep: #050914;
+    --deep2: #0a1024;
+    --glass: rgba(255,255,255,0.055);
+    --glass-strong: rgba(255,255,255,0.09);
+    --glass-border: rgba(255,255,255,0.16);
+    --glass-border-soft: rgba(255,255,255,0.09);
+    --paper: #eef2fc;
+    --paper-dim: #93a1c7;
+    --blue: #6fa8ff;
+    --blue-deep: #3d6fe0;
+    --mint: #7ce8b8;
+    --gold: #ffcf80;
+    --coral: #ff8a94;
+    --mono: 'IBM Plex Mono', ui-monospace, monospace;
+    --sans: 'IBM Plex Sans', system-ui, sans-serif;
+    --blur: blur(28px) saturate(160%);
+  }
+  *{box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{
+    margin:0;
+    background:
+      radial-gradient(ellipse 900px 600px at 12% -8%, rgba(80,130,255,0.35), transparent 60%),
+      radial-gradient(ellipse 700px 700px at 100% 10%, rgba(110,80,255,0.28), transparent 55%),
+      radial-gradient(ellipse 800px 600px at 30% 100%, rgba(50,190,255,0.16), transparent 55%),
+      linear-gradient(180deg, var(--deep), var(--deep2) 55%, var(--deep));
+    background-attachment:fixed;
+    color:var(--paper);
+    font-family:var(--sans);
+    line-height:1.5;
+    min-height:100vh;
+  }
+  a{color:inherit;}
+  ::selection{background:var(--blue); color:#050914;}
+
+  /* ---------- topbar ---------- */
+  .topbar{
+    position:sticky; top:0; z-index:20;
+    background:rgba(8,12,26,0.55);
+    backdrop-filter:var(--blur); -webkit-backdrop-filter:var(--blur);
+    border-bottom:1px solid var(--glass-border-soft);
+  }
+  .topbar-inner{
+    max-width:1080px; margin:0 auto;
+    padding:16px 24px;
+    display:flex; align-items:center; justify-content:space-between;
+    gap:16px;
+  }
+  .brand{
+    font-family:var(--mono);
+    font-size:15px;
+    color:var(--paper);
+    letter-spacing:0.01em;
+    cursor:pointer;
+    display:flex; align-items:center; gap:9px;
+  }
+  .brand .dot{width:8px;height:8px;border-radius:50%;background:var(--mint); box-shadow:0 0 8px var(--mint); flex-shrink:0;}
+  .topbar nav{display:flex; gap:24px; font-family:var(--mono); font-size:13px; color:var(--paper-dim);}
+  .topbar nav span{cursor:pointer; transition:color .15s ease;}
+  .topbar nav span:hover{color:var(--blue);}
+
+  /* ---------- hero ---------- */
+  .hero{max-width:1080px; margin:0 auto; padding:68px 24px 40px;}
+  .boot-line{
+    font-family:var(--mono); font-size:13px; color:var(--mint);
+    margin:0 0 18px; display:flex; align-items:center; gap:8px;
+  }
+  .boot-line::before{content:''; width:6px; height:6px; border-radius:50%; background:var(--mint); box-shadow:0 0 8px var(--mint); display:inline-block;}
+  h1.hero-title{
+    font-family:var(--sans); font-weight:700;
+    font-size:clamp(34px, 5vw, 54px);
+    line-height:1.08;
+    margin:0 0 18px;
+    max-width:14ch;
+    color:var(--paper);
+    letter-spacing:-0.01em;
+  }
+  .hero-sub{
+    font-size:16px; color:var(--paper-dim); max-width:56ch; margin:0 0 30px;
+  }
+  .hero-stats{
+    display:flex; gap:1px;
+    background:var(--glass-border-soft);
+    border:1px solid var(--glass-border);
+    border-radius:20px;
+    overflow:hidden;
+    backdrop-filter:var(--blur); -webkit-backdrop-filter:var(--blur);
+    box-shadow: inset 0 1px 0 rgba(255,255,255,0.14), 0 12px 40px rgba(5,9,20,0.35);
+  }
+  .hero-stat{
+    flex:1; padding:18px 20px; background:var(--glass);
+  }
+  .hero-stat .num{font-family:var(--mono); font-size:25px; color:var(--blue);}
+  .hero-stat .lbl{font-size:12.5px; color:var(--paper-dim); margin-top:3px;}
+
+  /* ---------- controls ---------- */
+  .controls{
+    max-width:1080px; margin:0 auto; padding:0 24px 22px;
+    display:flex; gap:10px; flex-wrap:wrap; align-items:center;
+  }
+  .search-box{
+    flex:1; min-width:220px;
+    display:flex; align-items:center; gap:10px;
+    background:var(--glass); border:1px solid var(--glass-border);
+    backdrop-filter:var(--blur); -webkit-backdrop-filter:var(--blur);
+    padding:12px 16px; border-radius:16px;
+    box-shadow: inset 0 1px 0 rgba(255,255,255,0.12);
+  }
+  .search-box input{
+    background:none; border:none; outline:none; color:var(--paper);
+    font-family:var(--mono); font-size:14px; width:100%;
+  }
+  .search-box input::placeholder{color:var(--paper-dim);}
+  .search-box svg{flex-shrink:0; opacity:0.7; color:var(--paper-dim);}
+  .filter-chip{
+    font-family:var(--mono); font-size:12.5px;
+    padding:11px 16px; border:1px solid var(--glass-border);
+    background:var(--glass); color:var(--paper-dim);
+    cursor:pointer; white-space:nowrap; border-radius:999px;
+    backdrop-filter:var(--blur); -webkit-backdrop-filter:var(--blur);
+    box-shadow: inset 0 1px 0 rgba(255,255,255,0.10);
+    transition:all .15s ease;
+  }
+  .filter-chip:hover{border-color:rgba(111,168,255,0.5); color:var(--paper);}
+  .filter-chip.active{border-color:var(--blue); color:#eaf2ff; background:linear-gradient(180deg, rgba(111,168,255,0.35), rgba(61,111,224,0.25)); box-shadow: inset 0 1px 0 rgba(255,255,255,0.35), 0 4px 18px rgba(80,130,255,0.35);}
+
+  /* ---------- device grid ---------- */
+  .grid-wrap{max-width:1080px; margin:0 auto; padding:8px 24px 80px;}
+  .grid{
+    display:grid; grid-template-columns:repeat(auto-fill, minmax(230px,1fr));
+    gap:16px;
+  }
+  .device-card{
+    background:var(--glass);
+    border:1px solid var(--glass-border);
+    border-radius:20px;
+    padding:22px;
+    cursor:pointer;
+    position:relative;
+    overflow:hidden;
+    backdrop-filter:var(--blur); -webkit-backdrop-filter:var(--blur);
+    box-shadow: inset 0 1px 0 rgba(255,255,255,0.14), 0 8px 30px rgba(5,9,20,0.3);
+    transition:transform .18s ease, background .18s ease, box-shadow .18s ease;
+  }
+  .device-card::before{
+    content:''; position:absolute; top:0; left:0; right:0; height:60%;
+    background:linear-gradient(180deg, rgba(255,255,255,0.10), transparent);
+    pointer-events:none;
+  }
+  .device-card:hover{
+    background:var(--glass-strong);
+    transform:translateY(-3px);
+    box-shadow: inset 0 1px 0 rgba(255,255,255,0.2), 0 14px 40px rgba(60,110,230,0.25);
+  }
+  .device-card:hover .arrow{transform:translateX(2px); opacity:1;}
+  .dc-top{display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:20px; position:relative;}
+  .dc-brand{font-family:var(--mono); font-size:11.5px; color:var(--paper-dim); text-transform:uppercase; letter-spacing:0.03em;}
+  .status-dot{width:7px;height:7px;border-radius:50%; margin-top:4px;}
+  .status-active{background:var(--mint); box-shadow:0 0 6px var(--mint);}
+  .status-beta{background:var(--gold); box-shadow:0 0 6px var(--gold);}
+  .status-eol{background:var(--coral); box-shadow:0 0 6px var(--coral);}
+  .dc-name{font-size:19px; font-weight:600; margin:0 0 4px; color:var(--paper); position:relative;}
+  .dc-codename{font-family:var(--mono); font-size:12.5px; color:var(--blue); position:relative;}
+  .dc-codename::before{content:'codename: ';color:var(--paper-dim);}
+  .dc-meta{margin-top:16px; font-size:12.5px; color:var(--paper-dim); display:flex; justify-content:space-between; align-items:center; position:relative;}
+  .dc-rom-count{font-family:var(--mono);}
+  .arrow{opacity:0.5; transition:all 0.15s ease; color:var(--blue);}
+
+  .empty-state{
+    text-align:center; padding:60px 20px; color:var(--paper-dim);
+    font-family:var(--mono); font-size:13px; grid-column:1/-1;
+    background:var(--glass); border:1px solid var(--glass-border); border-radius:20px;
+    backdrop-filter:var(--blur); -webkit-backdrop-filter:var(--blur);
+  }
+
+  footer{
+    border-top:1px solid var(--glass-border-soft); padding:28px 24px; text-align:center;
+    font-family:var(--mono); font-size:12px; color:var(--paper-dim); max-width:1080px; margin:0 auto;
+  }
+
+  /* ---------- device detail page ---------- */
+  .detail{max-width:880px; margin:0 auto; padding:44px 24px 80px; display:none;}
+  .back-link{
+    font-family:var(--mono); font-size:13px; color:var(--paper-dim);
+    cursor:pointer; display:inline-flex; align-items:center; gap:6px; margin-bottom:28px;
+    transition:color .15s ease;
+  }
+  .back-link:hover{color:var(--blue);}
+  .detail-header{
+    background:var(--glass); border:1px solid var(--glass-border); border-radius:24px;
+    padding:28px 28px 20px; margin-bottom:30px;
+    backdrop-filter:var(--blur); -webkit-backdrop-filter:var(--blur);
+    box-shadow: inset 0 1px 0 rgba(255,255,255,0.14), 0 12px 40px rgba(5,9,20,0.3);
+  }
+  .detail-eyebrow{font-family:var(--mono); font-size:12px; color:var(--paper-dim); margin-bottom:10px; text-transform:uppercase; letter-spacing:0.04em;}
+  .detail-title{font-size:clamp(28px,4vw,40px); font-weight:700; margin:0 0 10px; color:var(--paper); letter-spacing:-0.01em;}
+  .detail-codename{font-family:var(--mono); color:var(--blue); font-size:14px; margin-bottom:18px;}
+  .spec-row{display:flex; flex-wrap:wrap; gap:0; border-top:1px solid var(--glass-border-soft); margin-top:18px;}
+  .spec{padding:14px 20px 4px 0; margin-right:20px; border-right:1px solid var(--glass-border-soft); min-width:110px;}
+  .spec:last-child{border-right:none;}
+  .spec .k{font-size:11px; color:var(--paper-dim); text-transform:uppercase; letter-spacing:0.04em; margin-bottom:4px;}
+  .spec .v{font-family:var(--mono); font-size:14px; color:var(--paper);}
+
+  .rom-section-title{font-family:var(--mono); font-size:13px; color:var(--paper-dim); margin:0 0 16px; text-transform:uppercase; letter-spacing:0.03em;}
+  .rom-list{display:flex; flex-direction:column; gap:12px;}
+  .rom-item{
+    display:flex; align-items:center; justify-content:space-between; gap:16px;
+    padding:20px 22px; flex-wrap:wrap;
+    background:var(--glass); border:1px solid var(--glass-border); border-radius:18px;
+    backdrop-filter:var(--blur); -webkit-backdrop-filter:var(--blur);
+    box-shadow: inset 0 1px 0 rgba(255,255,255,0.12), 0 6px 24px rgba(5,9,20,0.25);
+    transition:background .15s ease;
+  }
+  .rom-item:hover{background:var(--glass-strong);}
+  .rom-left{display:flex; align-items:center; gap:14px; flex-wrap:wrap;}
+  .rom-name{font-size:16px; font-weight:600; color:var(--paper);}
+  .rom-badges{display:flex; gap:8px; flex-wrap:wrap;}
+  .badge{
+    font-family:var(--mono); font-size:11px; padding:4px 10px; border-radius:999px;
+    border:1px solid var(--glass-border-soft); color:var(--paper-dim); background:rgba(255,255,255,0.04);
+  }
+  .badge.status-active{color:var(--mint); border-color:rgba(124,232,184,0.4);}
+  .badge.status-beta{color:var(--gold); border-color:rgba(255,207,128,0.4);}
+  .badge.status-eol{color:var(--coral); border-color:rgba(255,138,148,0.4);}
+  .rom-sub{font-size:12.5px; color:var(--paper-dim); width:100%; margin-top:2px;}
+  .rom-link{
+    font-family:var(--mono); font-size:12.5px; color:#04081a; font-weight:600;
+    background:linear-gradient(180deg, #8fbaff, var(--blue-deep));
+    padding:10px 16px; border-radius:999px;
+    text-decoration:none; white-space:nowrap; flex-shrink:0;
+    border:1px solid rgba(255,255,255,0.4);
+    box-shadow: inset 0 1px 0 rgba(255,255,255,0.5), 0 4px 16px rgba(80,130,255,0.4);
+    transition:transform .15s ease, box-shadow .15s ease;
+  }
+  .rom-link:hover{transform:translateY(-1px); box-shadow: inset 0 1px 0 rgba(255,255,255,0.6), 0 6px 20px rgba(80,130,255,0.55);}
+  .rom-link.disabled{
+    background:rgba(255,255,255,0.06); color:var(--paper-dim); font-weight:500;
+    border:1px dashed var(--glass-border); box-shadow:none; cursor:not-allowed;
+    pointer-events:none;
+  }
+  .rom-link.disabled:hover{transform:none;}
+
+  .disclaimer{
+    margin-top:36px; padding:18px 20px; border:1px solid var(--glass-border-soft); border-radius:16px;
+    background:rgba(255,255,255,0.03);
+    font-size:12.5px; color:var(--paper-dim); line-height:1.6;
+  }
+  .disclaimer b{color:var(--paper);}
+
+  @media (max-width:640px){
+    .topbar nav{display:none;}
+    .hero{padding:48px 18px 28px;}
+    .hero-stats{flex-wrap:wrap; border-radius:18px;}
+    .hero-stat{flex:1 1 50%;}
+    .rom-item{align-items:flex-start;}
+    .rom-link{width:100%; text-align:center;}
+  }
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <div class="topbar-inner">
+    <div class="brand" onclick="goHome()"><span class="dot"></span>/GoROMS</div>
+    <nav>
+      <span onclick="goHome()">devices</span>
+      <span onclick="window.scrollTo({top:document.body.scrollHeight,behavior:'smooth'})">about</span>
+    </nav>
+  </div>
+</div>
+
+<!-- ===== HOME VIEW ===== -->
+<div id="home-view">
+  <div class="hero">
+    <p class="boot-line">actively tracking builds</p>
+    <h1 class="hero-title">Let ur old phones have a brand new life</h1>
+    <p class="hero-sub">A directory of custom-rommable phones and the ROMs actively maintained for them, their custom recoveries are existing too . No downloads hosted here — every build links back to its source so you flash from the maintainer directly.</p>
+    <div class="hero-stats">
+      <div class="hero-stat"><div class="num" id="stat-devices">0</div><div class="lbl">devices listed</div></div>
+      <div class="hero-stat"><div class="num" id="stat-roms">0</div><div class="lbl">ROM builds tracked</div></div>
+      <div class="hero-stat"><div class="num" id="stat-maintained">0</div><div class="lbl">actively maintained</div></div>
+    </div>
+  </div>
+
+  <div class="controls">
+    <div class="search-box">
+      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+      <input id="search-input" type="text" placeholder="search by device, codename, or brand…" oninput="renderGrid()">
+    </div>
+    <div class="filter-chip active" data-brand="all" onclick="setBrand('all', this)">all brands</div>
+    <div class="filter-chip" data-brand="Google" onclick="setBrand('Google', this)">Google</div>
+    <div class="filter-chip" data-brand="OnePlus" onclick="setBrand('OnePlus', this)">OnePlus</div>
+    <div class="filter-chip" data-brand="Xiaomi" onclick="setBrand('Xiaomi', this)">Xiaomi</div>
+    <div class="filter-chip" data-brand="Samsung" onclick="setBrand('Samsung', this)">Samsung</div>
+    <div class="filter-chip" data-brand="Fairphone" onclick="setBrand('Fairphone', this)">Maybe other brands next time??</div>
+  </div>
+
+  <div class="grid-wrap">
+    <div class="grid" id="device-grid"></div>
+  </div>
+
+  <footer id="about">
+    /GoROMS is a personal project by <a href="idk what to put here maybe ig or tiktik??" target="">@G</a>.
+  </footer>
+</div>
+
+<!-- ===== DEVICE DETAIL VIEW ===== -->
+<div class="detail" id="detail-view"></div>
+
+<script>
+const DEVICES = [
+  {
+    // ===== DEVICE 1 =====
+    id:"device-01", brand:"Xiaomi", name:"Xiaomi Redmi Note 11", codename:"Spes",
+    chipset:"snapdragon 680", released:"", status:"active",
+    roms:[
+      {name:"", version:"", maintainer:"", status:"active", note:"", link:""}, // rom slot 1
+      {name:"", version:"", maintainer:"", status:"active", note:"", link:""}, // rom slot 2
+      {name:"", version:"", maintainer:"", status:"active", note:"", link:""}, // rom slot 3
+      {name:"", version:"", maintainer:"", status:"active", note:"", link:""}, // rom slot 4
+      {name:"", version:"", maintainer:"", status:"active", note:"", link:""}, // rom slot 5
+      {name:"", version:"", maintainer:"", status:"active", note:"", link:""}, // rom slot 6
+      {name:"", version:"", maintainer:"", status:"active", note:"", link:""}, // rom slot 7
+      {name:"", version:"", maintainer:"", status:"active", note:"", link:""}, // rom slot 8
+      {name:"", version:"", maintainer:"", status:"active", note:"", link:""}, // rom slot 9
+      {name:"", version:"", maintainer:"", status:"active", note:"", link:""} // rom slot 10
+    ],
+    recovery:[
+      {name:"TWRP", version:"", maintainer:"", status:"active", note:"", link:""}, // recovery slot 1
+      {name:"OrangeFox", version:"", maintainer:"", status:"active", note:"", link:""} // recovery slot 2
+    ]
+  },
+  {
+    // ===== DEVICE 2 =====
+    id:"device-02", brand:"Samsung", name:"Galaxy S7", codename:"G930F",
+    chipset:"Exynos 8890", released:"", status:"active",
+    roms:[
+      {name:"", version:"", maintainer:"", status:"active", note:"", link:""}, // rom slot 1
+      {name:"", version:"", maintainer:"", status:"active", note:"", link:""}, // rom slot 2
+      {name:"", version:"", maintainer:"", status:"active", note:"", link:""}, // rom slot 3
+      {name:"", version:"", maintainer:"", status:"active", note:"", link:""}, // rom slot 4
+      {name:"", version:"", maintainer:"", status:"active", note:"", link:""}, // rom slot 5
+      {name:"", version:"", maintainer:"", status:"active", note:"", link:""}, // rom slot 6
+      {name:"", version:"", maintainer:"", status:"active", note:"", link:""}, // rom slot 7
+      {name:"", version:"", maintainer:"", status:"active", note:"", link:""}, // rom slot 8
+      {name:"", version:"", maintainer:"", status:"active", note:"", link:""}, // rom slot 9
+      {name:"", version:"", maintainer:"", status:"active", note:"", link:""} // rom slot 10
+    ],
+    recovery:[
+      {name:"TWRP", version:"", maintainer:"", status:"active", note:"", link:""}, // recovery slot 1
+      {name:"OrangeFox", version:"", maintainer:"", status:"active", note:"", link:""} // recovery slot 2
+    ]
+  },
+  {
+    // ===== DEVICE 3 =====
+    id:"device-03", brand:"", name:"", codename:"",
+    chipset:"", released:"", status:"active",
+    roms:[
+      {name:"", version:"", maintainer:"", status:"active", note:"", link:""}, // rom slot 1
+      {name:"", version:"", maintainer:"", status:"active", note:"", link:""}, // rom slot 2
+      {name:"", version:"", maintainer:"", status:"active", note:"", link:""}, // rom slot 3
+      {name:"", version:"", maintainer:"", status:"active", note:"", link:""}, // rom slot 4
+      {name:"", version:"", maintainer:"", status:"active", note:"", link:""}, // rom slot 5
+      {name:"", version:"", maintainer:"", status:"active", note:"", link:""}, // rom slot 6
+      {name:"", version:"", maintainer:"", status:"active", note:"", link:""}, // rom slot 7
+      {name:"", version:"", maintainer:"", status:"active", note:"", link:""}, // rom slot 8
+      {name:"", version:"", maintainer:"", status:"active", note:"", link:""}, // rom slot 9
+      {name:"", version:"", maintainer:"", status:"active", note:"", link:""} // rom slot 10
+    ],
+    recovery:[
+      {name:"TWRP", version:"", maintainer:"", status:"active", note:"", link:""}, // recovery slot 1
+      {name:"OrangeFox", version:"", maintainer:"", status:"active", note:"", link:""} // recovery slot 2
+    ]
+  },
+  {
+    // ===== DEVICE 4 =====
+    id:"device-04", brand:"", name:"", codename:"",
+    chipset:"", released:"", status:"active",
+    roms:[
+      {name:"", version:"", maintainer:"", status:"active", note:"", link:""}, // rom slot 1
+      {name:"", version:"", maintainer:"", status:"active", note:"", link:""}, // rom slot 2
+      {name:"", version:"", maintainer:"", status:"active", note:"", link:""}, // rom slot 3
+      {name:"", version:"", maintainer:"", status:"active", note:"", link:""}, // rom slot 4
+      {name:"", version:"", maintainer:"", status:"active", note:"", link:""}, // rom slot 5
+      {name:"", version:"", maintainer:"", status:"active", note:"", link:""}, // rom slot 6
+      {name:"", version:"", maintainer:"", status:"active", note:"", link:""}, // rom slot 7
+      {name:"", version:"", maintainer:"", status:"active", note:"", link:""}, // rom slot 8
+      {name:"", version:"", maintainer:"", status:"active", note:"", link:""}, // rom slot 9
+      {name:"", version:"", maintainer:"", status:"active", note:"", link:""} // rom slot 10
+    ],
+    recovery:[
+      {name:"TWRP", version:"", maintainer:"", status:"active", note:"", link:""}, // recovery slot 1
+      {name:"OrangeFox", version:"", maintainer:"", status:"active", note:"", link:""} // recovery slot 2
+    ]
+  },
+  {
+    // ===== DEVICE 5 =====
+    id:"device-05", brand:"", name:"", codename:"",
+    chipset:"", released:"", status:"active",
+    roms:[
+      {name:"", version:"", maintainer:"", status:"active", note:"", link:""}, // rom slot 1
+      {name:"", version:"", maintainer:"", status:"active", note:"", link:""}, // rom slot 2
+      {name:"", version:"", maintainer:"", status:"active", note:"", link:""}, // rom slot 3
+      {name:"", version:"", maintainer:"", status:"active", note:"", link:""}, // rom slot 4
+      {name:"", version:"", maintainer:"", status:"active", note:"", link:""}, // rom slot 5
+      {name:"", version:"", maintainer:"", status:"active", note:"", link:""}, // rom slot 6
+      {name:"", version:"", maintainer:"", status:"active", note:"", link:""}, // rom slot 7
+      {name:"", version:"", maintainer:"", status:"active", note:"", link:""}, // rom slot 8
+      {name:"", version:"", maintainer:"", status:"active", note:"", link:""}, // rom slot 9
+      {name:"", version:"", maintainer:"", status:"active", note:"", link:""} // rom slot 10
+    ],
+    recovery:[
+      {name:"TWRP", version:"", maintainer:"", status:"active", note:"", link:""}, // recovery slot 1
+      {name:"OrangeFox", version:"", maintainer:"", status:"active", note:"", link:""} // recovery slot 2
+    ]
+  },
+  {
+    // ===== DEVICE 6 =====
+    id:"device-06", brand:"", name:"", codename:"",
+    chipset:"", released:"", status:"active",
+    roms:[
+      {name:"", version:"", maintainer:"", status:"active", note:"", link:""}, // rom slot 1
+      {name:"", version:"", maintainer:"", status:"active", note:"", link:""}, // rom slot 2
+      {name:"", version:"", maintainer:"", status:"active", note:"", link:""}, // rom slot 3
+      {name:"", version:"", maintainer:"", status:"active", note:"", link:""}, // rom slot 4
+      {name:"", version:"", maintainer:"", status:"active", note:"", link:""}, // rom slot 5
+      {name:"", version:"", maintainer:"", status:"active", note:"", link:""}, // rom slot 6
+      {name:"", version:"", maintainer:"", status:"active", note:"", link:""}, // rom slot 7
+      {name:"", version:"", maintainer:"", status:"active", note:"", link:""}, // rom slot 8
+      {name:"", version:"", maintainer:"", status:"active", note:"", link:""}, // rom slot 9
+      {name:"", version:"", maintainer:"", status:"active", note:"", link:""} // rom slot 10
+    ],
+    recovery:[
+      {name:"TWRP", version:"", maintainer:"", status:"active", note:"", link:""}, // recovery slot 1
+      {name:"OrangeFox", version:"", maintainer:"", status:"active", note:"", link:""} // recovery slot 2
+    ]
+  },
+  {
+    // ===== DEVICE 7 =====
+    id:"device-07", brand:"", name:"", codename:"",
+    chipset:"", released:"", status:"active",
+    roms:[
+      {name:"", version:"", maintainer:"", status:"active", note:"", link:""}, // rom slot 1
+      {name:"", version:"", maintainer:"", status:"active", note:"", link:""}, // rom slot 2
+      {name:"", version:"", maintainer:"", status:"active", note:"", link:""}, // rom slot 3
+      {name:"", version:"", maintainer:"", status:"active", note:"", link:""}, // rom slot 4
+      {name:"", version:"", maintainer:"", status:"active", note:"", link:""}, // rom slot 5
+      {name:"", version:"", maintainer:"", status:"active", note:"", link:""}, // rom slot 6
+      {name:"", version:"", maintainer:"", status:"active", note:"", link:""}, // rom slot 7
+      {name:"", version:"", maintainer:"", status:"active", note:"", link:""}, // rom slot 8
+      {name:"", version:"", maintainer:"", status:"active", note:"", link:""}, // rom slot 9
+      {name:"", version:"", maintainer:"", status:"active", note:"", link:""} // rom slot 10
+    ],
+    recovery:[
+      {name:"TWRP", version:"", maintainer:"", status:"active", note:"", link:""}, // recovery slot 1
+      {name:"OrangeFox", version:"", maintainer:"", status:"active", note:"", link:""} // recovery slot 2
+    ]
+  },
+  {
+    // ===== DEVICE 8 =====
+    id:"device-08", brand:"", name:"", codename:"",
+    chipset:"", released:"", status:"active",
+    roms:[
+      {name:"", version:"", maintainer:"", status:"active", note:"", link:""}, // rom slot 1
+      {name:"", version:"", maintainer:"", status:"active", note:"", link:""}, // rom slot 2
+      {name:"", version:"", maintainer:"", status:"active", note:"", link:""}, // rom slot 3
+      {name:"", version:"", maintainer:"", status:"active", note:"", link:""}, // rom slot 4
+      {name:"", version:"", maintainer:"", status:"active", note:"", link:""}, // rom slot 5
+      {name:"", version:"", maintainer:"", status:"active", note:"", link:""}, // rom slot 6
+      {name:"", version:"", maintainer:"", status:"active", note:"", link:""}, // rom slot 7
+      {name:"", version:"", maintainer:"", status:"active", note:"", link:""}, // rom slot 8
+      {name:"", version:"", maintainer:"", status:"active", note:"", link:""}, // rom slot 9
+      {name:"", version:"", maintainer:"", status:"active", note:"", link:""} // rom slot 10
+    ],
+    recovery:[
+      {name:"TWRP", version:"", maintainer:"", status:"active", note:"", link:""}, // recovery slot 1
+      {name:"OrangeFox", version:"", maintainer:"", status:"active", note:"", link:""} // recovery slot 2
+    ]
+  },
+  {
+    // ===== DEVICE 9 =====
+    id:"device-09", brand:"", name:"", codename:"",
+    chipset:"", released:"", status:"active",
+    roms:[
+      {name:"", version:"", maintainer:"", status:"active", note:"", link:""}, // rom slot 1
+      {name:"", version:"", maintainer:"", status:"active", note:"", link:""}, // rom slot 2
+      {name:"", version:"", maintainer:"", status:"active", note:"", link:""}, // rom slot 3
+      {name:"", version:"", maintainer:"", status:"active", note:"", link:""}, // rom slot 4
+      {name:"", version:"", maintainer:"", status:"active", note:"", link:""}, // rom slot 5
+      {name:"", version:"", maintainer:"", status:"active", note:"", link:""}, // rom slot 6
+      {name:"", version:"", maintainer:"", status:"active", note:"", link:""}, // rom slot 7
+      {name:"", version:"", maintainer:"", status:"active", note:"", link:""}, // rom slot 8
+      {name:"", version:"", maintainer:"", status:"active", note:"", link:""}, // rom slot 9
+      {name:"", version:"", maintainer:"", status:"active", note:"", link:""} // rom slot 10
+    ],
+    recovery:[
+      {name:"TWRP", version:"", maintainer:"", status:"active", note:"", link:""}, // recovery slot 1
+      {name:"OrangeFox", version:"", maintainer:"", status:"active", note:"", link:""} // recovery slot 2
+    ]
+  },
+  {
+    // ===== DEVICE 10 =====
+    id:"device-10", brand:"", name:"", codename:"",
+    chipset:"", released:"", status:"active",
+    roms:[
+      {name:"", version:"", maintainer:"", status:"active", note:"", link:""}, // rom slot 1
+      {name:"", version:"", maintainer:"", status:"active", note:"", link:""}, // rom slot 2
+      {name:"", version:"", maintainer:"", status:"active", note:"", link:""}, // rom slot 3
+      {name:"", version:"", maintainer:"", status:"active", note:"", link:""}, // rom slot 4
+      {name:"", version:"", maintainer:"", status:"active", note:"", link:""}, // rom slot 5
+      {name:"", version:"", maintainer:"", status:"active", note:"", link:""}, // rom slot 6
+      {name:"", version:"", maintainer:"", status:"active", note:"", link:""}, // rom slot 7
+      {name:"", version:"", maintainer:"", status:"active", note:"", link:""}, // rom slot 8
+      {name:"", version:"", maintainer:"", status:"active", note:"", link:""}, // rom slot 9
+      {name:"", version:"", maintainer:"", status:"active", note:"", link:""} // rom slot 10
+    ],
+    recovery:[
+      {name:"TWRP", version:"", maintainer:"", status:"active", note:"", link:""}, // recovery slot 1
+      {name:"OrangeFox", version:"", maintainer:"", status:"active", note:"", link:""} // recovery slot 2
+    ]
+  },
+  {
+    // ===== DEVICE 11 =====
+    id:"device-11", brand:"", name:"", codename:"",
+    chipset:"", released:"", status:"active",
+    roms:[
+      {name:"", version:"", maintainer:"", status:"active", note:"", link:""}, // rom slot 1
+      {name:"", version:"", maintainer:"", status:"active", note:"", link:""}, // rom slot 2
+      {name:"", version:"", maintainer:"", status:"active", note:"", link:""}, // rom slot 3
+      {name:"", version:"", maintainer:"", status:"active", note:"", link:""}, // rom slot 4
+      {name:"", version:"", maintainer:"", status:"active", note:"", link:""}, // rom slot 5
+      {name:"", version:"", maintainer:"", status:"active", note:"", link:""}, // rom slot 6
+      {name:"", version:"", maintainer:"", status:"active", note:"", link:""}, // rom slot 7
+      {name:"", version:"", maintainer:"", status:"active", note:"", link:""}, // rom slot 8
+      {name:"", version:"", maintainer:"", status:"active", note:"", link:""}, // rom slot 9
+      {name:"", version:"", maintainer:"", status:"active", note:"", link:""} // rom slot 10
+    ],
+    recovery:[
+      {name:"TWRP", version:"", maintainer:"", status:"active", note:"", link:""}, // recovery slot 1
+      {name:"OrangeFox", version:"", maintainer:"", status:"active", note:"", link:""} // recovery slot 2
+    ]
+  },
+  {
+    // ===== DEVICE 12 =====
+    id:"device-12", brand:"", name:"", codename:"",
+    chipset:"", released:"", status:"active",
+    roms:[
+      {name:"", version:"", maintainer:"", status:"active", note:"", link:""}, // rom slot 1
+      {name:"", version:"", maintainer:"", status:"active", note:"", link:""}, // rom slot 2
+      {name:"", version:"", maintainer:"", status:"active", note:"", link:""}, // rom slot 3
+      {name:"", version:"", maintainer:"", status:"active", note:"", link:""}, // rom slot 4
+      {name:"", version:"", maintainer:"", status:"active", note:"", link:""}, // rom slot 5
+      {name:"", version:"", maintainer:"", status:"active", note:"", link:""}, // rom slot 6
+      {name:"", version:"", maintainer:"", status:"active", note:"", link:""}, // rom slot 7
+      {name:"", version:"", maintainer:"", status:"active", note:"", link:""}, // rom slot 8
+      {name:"", version:"", maintainer:"", status:"active", note:"", link:""}, // rom slot 9
+      {name:"", version:"", maintainer:"", status:"active", note:"", link:""} // rom slot 10
+    ],
+    recovery:[
+      {name:"TWRP", version:"", maintainer:"", status:"active", note:"", link:""}, // recovery slot 1
+      {name:"OrangeFox", version:"", maintainer:"", status:"active", note:"", link:""} // recovery slot 2
+    ]
+  },
+  {
+    // ===== DEVICE 13 =====
+    id:"device-13", brand:"", name:"", codename:"",
+    chipset:"", released:"", status:"active",
+    roms:[
+      {name:"", version:"", maintainer:"", status:"active", note:"", link:""}, // rom slot 1
+      {name:"", version:"", maintainer:"", status:"active", note:"", link:""}, // rom slot 2
+      {name:"", version:"", maintainer:"", status:"active", note:"", link:""}, // rom slot 3
+      {name:"", version:"", maintainer:"", status:"active", note:"", link:""}, // rom slot 4
+      {name:"", version:"", maintainer:"", status:"active", note:"", link:""}, // rom slot 5
+      {name:"", version:"", maintainer:"", status:"active", note:"", link:""}, // rom slot 6
+      {name:"", version:"", maintainer:"", status:"active", note:"", link:""}, // rom slot 7
+      {name:"", version:"", maintainer:"", status:"active", note:"", link:""}, // rom slot 8
+      {name:"", version:"", maintainer:"", status:"active", note:"", link:""}, // rom slot 9
+      {name:"", version:"", maintainer:"", status:"active", note:"", link:""} // rom slot 10
+    ],
+    recovery:[
+      {name:"TWRP", version:"", maintainer:"", status:"active", note:"", link:""}, // recovery slot 1
+      {name:"OrangeFox", version:"", maintainer:"", status:"active", note:"", link:""} // recovery slot 2
+    ]
+  },
+  {
+    // ===== DEVICE 14 =====
+    id:"device-14", brand:"", name:"", codename:"",
+    chipset:"", released:"", status:"active",
+    roms:[
+      {name:"", version:"", maintainer:"", status:"active", note:"", link:""}, // rom slot 1
+      {name:"", version:"", maintainer:"", status:"active", note:"", link:""}, // rom slot 2
+      {name:"", version:"", maintainer:"", status:"active", note:"", link:""}, // rom slot 3
+      {name:"", version:"", maintainer:"", status:"active", note:"", link:""}, // rom slot 4
+      {name:"", version:"", maintainer:"", status:"active", note:"", link:""}, // rom slot 5
+      {name:"", version:"", maintainer:"", status:"active", note:"", link:""}, // rom slot 6
+      {name:"", version:"", maintainer:"", status:"active", note:"", link:""}, // rom slot 7
+      {name:"", version:"", maintainer:"", status:"active", note:"", link:""}, // rom slot 8
+      {name:"", version:"", maintainer:"", status:"active", note:"", link:""}, // rom slot 9
+      {name:"", version:"", maintainer:"", status:"active", note:"", link:""} // rom slot 10
+    ],
+    recovery:[
+      {name:"TWRP", version:"", maintainer:"", status:"active", note:"", link:""}, // recovery slot 1
+      {name:"OrangeFox", version:"", maintainer:"", status:"active", note:"", link:""} // recovery slot 2
+    ]
+  },
+  {
+    // ===== DEVICE 15 =====
+    id:"device-15", brand:"", name:"", codename:"",
+    chipset:"", released:"", status:"active",
+    roms:[
+      {name:"", version:"", maintainer:"", status:"active", note:"", link:""}, // rom slot 1
+      {name:"", version:"", maintainer:"", status:"active", note:"", link:""}, // rom slot 2
+      {name:"", version:"", maintainer:"", status:"active", note:"", link:""}, // rom slot 3
+      {name:"", version:"", maintainer:"", status:"active", note:"", link:""}, // rom slot 4
+      {name:"", version:"", maintainer:"", status:"active", note:"", link:""}, // rom slot 5
+      {name:"", version:"", maintainer:"", status:"active", note:"", link:""}, // rom slot 6
+      {name:"", version:"", maintainer:"", status:"active", note:"", link:""}, // rom slot 7
+      {name:"", version:"", maintainer:"", status:"active", note:"", link:""}, // rom slot 8
+      {name:"", version:"", maintainer:"", status:"active", note:"", link:""}, // rom slot 9
+      {name:"", version:"", maintainer:"", status:"active", note:"", link:""} // rom slot 10
+    ],
+    recovery:[
+      {name:"TWRP", version:"", maintainer:"", status:"active", note:"", link:""}, // recovery slot 1
+      {name:"OrangeFox", version:"", maintainer:"", status:"active", note:"", link:""} // recovery slot 2
+    ]
+  }
+];
+
+let activeBrand = 'all';
+
+function statusLabel(s){
+  return {active:"actively maintained", beta:"beta / unofficial", eol:"end of life"}[s] || s;
+}
+
+function setBrand(brand, el){
+  activeBrand = brand;
+  document.querySelectorAll('.filter-chip').forEach(c=>c.classList.remove('active'));
+  el.classList.add('active');
+  renderGrid();
+}
+
+function renderStats(){
+  document.getElementById('stat-devices').textContent = DEVICES.length;
+  document.getElementById('stat-roms').textContent = DEVICES.reduce((a,d)=>a+d.roms.length,0);
+  document.getElementById('stat-maintained').textContent = DEVICES.filter(d=>d.status==='active').length;
+}
+
+function romFillCount(d){
+  return d.roms.filter(r => r.name && r.name.trim() !== "").length;
+}
+
+function renderGrid(){
+  const q = document.getElementById('search-input').value.trim().toLowerCase();
+  const grid = document.getElementById('device-grid');
+  const filtered = DEVICES.filter(d=>{
+    const matchesBrand = activeBrand==='all' || d.brand===activeBrand;
+    const name = (d.name||'').toLowerCase();
+    const codename = (d.codename||'').toLowerCase();
+    const brand = (d.brand||'').toLowerCase();
+    const matchesQuery = !q || name.includes(q) || codename.includes(q) || brand.includes(q);
+    return matchesBrand && matchesQuery;
+  });
+
+  if(filtered.length===0){
+    grid.innerHTML = `<div class="empty-state">nothing here sadly "my fella" — IDK what you're looking for...</div>`;
+    return;
+  }
+
+  grid.innerHTML = filtered.map(d=>{
+    const displayName = d.name && d.name.trim() !== "" ? d.name : "Untitled device";
+    const displayBrand = d.brand && d.brand.trim() !== "" ? d.brand : "—";
+    const filled = romFillCount(d);
+    return `
+    <div class="device-card" onclick="openDevice('${d.id}')">
+      <div class="dc-top">
+        <span class="dc-brand">${displayBrand}</span>
+        <span class="status-dot status-${d.status||'active'}" title="${statusLabel(d.status)}"></span>
+      </div>
+      <div class="dc-name">${displayName}</div>
+      <div class="dc-codename">${d.codename && d.codename.trim() !== "" ? d.codename : "—"}</div>
+      <div class="dc-meta">
+        <span class="dc-rom-count">${filled}/${d.roms.length} ROM slots filled</span>
+        <span class="arrow">→</span>
+      </div>
+    </div>
+  `;}).join('');
+}
+
+function openDevice(id){
+  const d = DEVICES.find(x=>x.id===id);
+  if(!d) return;
+  window.location.hash = '#/device/' + id;
+}
+
+function renderDetail(d){
+  const view = document.getElementById('detail-view');
+  const displayName = d.name && d.name.trim() !== "" ? d.name : "Untitled device";
+  const displayBrand = d.brand && d.brand.trim() !== "" ? d.brand : "—";
+  const displayCodename = d.codename && d.codename.trim() !== "" ? d.codename : "—";
+  view.innerHTML = `
+    <div class="back-link" onclick="goHome()">← back to all devices</div>
+    <div class="detail-header">
+      <div class="detail-eyebrow">${displayBrand}</div>
+      <h1 class="detail-title">${displayName}</h1>
+      <div class="detail-codename">codename: ${displayCodename}</div>
+      <div class="spec-row">
+        <div class="spec"><div class="k">Chipset</div><div class="v">${d.chipset && d.chipset.trim()!=="" ? d.chipset : "—"}</div></div>
+        <div class="spec"><div class="k">Released</div><div class="v">${d.released && d.released.trim()!=="" ? d.released : "—"}</div></div>
+        <div class="spec"><div class="k">Status</div><div class="v">${statusLabel(d.status)}</div></div>
+      </div>
+    </div>
+
+    <div class="rom-section-title">available builds — ${romFillCount(d)}/${d.roms.length} slots filled</div>
+    <div class="rom-list">
+      ${d.roms.map((r,i)=>{
+        const isEmpty = !r.name || r.name.trim()==="";
+        if(isEmpty){
+          return `
+          <div class="rom-item" style="opacity:0.45;">
+            <div class="rom-left">
+              <span class="rom-name" style="font-family:var(--mono); font-size:13px; color:var(--paper-dim);">rom slot ${i+1} — empty</span>
+            </div>
+          </div>`;
+        }
+        const hasLink = r.link && r.link.trim() !== "";
+        return `
+        <div class="rom-item">
+          <div class="rom-left">
+            <span class="rom-name">${r.name}</span>
+            <span class="rom-badges">
+              ${r.version ? `<span class="badge">${r.version}</span>` : ''}
+              <span class="badge status-${r.status||'active'}">${statusLabel(r.status)}</span>
+            </span>
+            ${(r.maintainer || r.note) ? `<span class="rom-sub">${[r.maintainer, r.note].filter(Boolean).join(' — ')}</span>` : ''}
+          </div>
+          ${hasLink
+            ? `<a class="rom-link" href="${r.link}" target="_blank" rel="noopener noreferrer">open source ↗</a>`
+            : `<span class="rom-link disabled">no link yet</span>`}
+        </div>`;
+      }).join('')}
+    </div>
+
+    <div class="rom-section-title" style="margin-top:34px;">custom recovery</div>
+    <div class="rom-list">
+      ${(d.recovery||[]).map((r)=>{
+        const hasLink = r.link && r.link.trim() !== "";
+        const hasDetails = r.version || r.maintainer || r.note || hasLink;
+        return `
+        <div class="rom-item"${hasDetails ? '' : ' style="opacity:0.55;"'}>
+          <div class="rom-left">
+            <span class="rom-name">${r.name}</span>
+            <span class="rom-badges">
+              ${r.version ? `<span class="badge">${r.version}</span>` : ''}
+              <span class="badge status-${r.status||'active'}">${statusLabel(r.status)}</span>
+            </span>
+            ${(r.maintainer || r.note) ? `<span class="rom-sub">${[r.maintainer, r.note].filter(Boolean).join(' — ')}</span>` : ''}
+          </div>
+          ${hasLink
+            ? `<a class="rom-link" href="${r.link}" target="_blank" rel="noopener noreferrer">open source ↗</a>`
+            : `<span class="rom-link disabled">no link yet</span>`}
+        </div>`;
+      }).join('')}
+    </div>
+
+    <div class="disclaimer"><b>Before you flash:</b> do this just if u know what you're doing bro, verify the build matches your exact model/variant, and read the source thread in full — bricking a device is rare but always possible with third-party firmware.</div>
+  `;
+}
+
+function goHome(){
+  window.location.hash = '';
+}
+
+function router(){
+  const hash = window.location.hash;
+  const match = hash.match(/^#\/device\/(.+)$/);
+  const home = document.getElementById('home-view');
+  const detail = document.getElementById('detail-view');
+  if(match){
+    const d = DEVICES.find(x=>x.id===match[1]);
+    if(d){
+      home.style.display = 'none';
+      detail.style.display = 'block';
+      renderDetail(d);
+      window.scrollTo(0,0);
+      return;
+    }
+  }
+  home.style.display = 'block';
+  detail.style.display = 'none';
+  window.scrollTo(0,0);
+}
+
+window.addEventListener('hashchange', router);
+renderStats();
+renderGrid();
+router();
+</script>
+</body>
+</html>
