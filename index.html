@@ -21,6 +21,7 @@
     --mint: #7ce8b8;
     --gold: #ffcf80;
     --coral: #ff8a94;
+    --violet: #b464ff;
     --mono: 'IBM Plex Mono', ui-monospace, monospace;
     --sans: 'IBM Plex Sans', system-ui, sans-serif;
     --blur: blur(28px) saturate(160%);
@@ -169,6 +170,7 @@
   .status-active{background:var(--mint); box-shadow:0 0 6px var(--mint);}
   .status-beta{background:var(--gold); box-shadow:0 0 6px var(--gold);}
   .status-eol{background:var(--coral); box-shadow:0 0 6px var(--coral);}
+  .status-exp{background:var(--violet); box-shadow:0 0 6px var(--violet);}
   .dc-name{font-size:19px; font-weight:600; margin:0 0 4px; color:var(--paper); position:relative;}
   .dc-codename{font-family:var(--mono); font-size:12.5px; color:var(--blue); position:relative;}
   .dc-codename::before{content:'codename: ';color:var(--paper-dim);}
@@ -232,6 +234,7 @@
   .badge.status-active{color:var(--mint); border-color:rgba(124,232,184,0.4);}
   .badge.status-beta{color:var(--gold); border-color:rgba(255,207,128,0.4);}
   .badge.status-eol{color:var(--coral); border-color:rgba(255,138,148,0.4);}
+  .badge.status-exp{color:var(--violet); border-color:rgba(180,100,255,0.4);}
   .rom-sub{font-size:12.5px; color:var(--paper-dim); width:100%; margin-top:2px;}
   .rom-link{
     font-family:var(--mono); font-size:12.5px; color:#04081a; font-weight:600;
@@ -283,7 +286,7 @@
 <div id="home-view">
   <div class="hero">
     <p class="boot-line">actively tracking builds</p>
-    <h1 class="hero-title">Let ur old phones have a brand new life</h1>
+    <h1 class="hero-title">Enjoy giving your old phones a brand new life</h1>
     <p class="hero-sub">A directory of custom-rommable phones and the ROMs actively maintained for them, their custom recoveries are existing too . No downloads hosted here — every build links back to its source so you flash from the maintainer directly.</p>
     <div class="hero-stats">
       <div class="hero-stat"><div class="num" id="stat-devices">0</div><div class="lbl">devices listed</div></div>
@@ -310,7 +313,7 @@
   </div>
 
   <footer id="about">
-    /GoROMS is a personal project by <a href="https://linktr.ee/ghalinebbat38" target="">@G</a> and <a href="https://linktr.ee/your_other_handle" target="">@itz.s7tech__</a>.
+    /GoROMS is a personal project by <a href="https://linktr.ee/ghalinebbat38" target="">@G</a> and <a href="https://linktr.ee/S7Tech" target="">@S7Tech</a>.<br>
   </footer>
 </div>
 
@@ -366,11 +369,11 @@ const DEVICES = [
     id:"device-03", brand:"Xiaomi", name:"Redmi K20 Pro (Mi 9T Pro)", codename:"Raphael",
     chipset:"Snapdragon 855", released:"May 2019", status:"active",
     roms:[
-      {name:"OxygenOS 16.0.5 Oneplus 11 Port", version:"v1.0", maintainer:"By @Deyn_Zypher & @voxelsy", status:"active", note:" OxygenOS 16.0.5 - Android 16 Port - V1.0 Release Build Ported from: OnePlus 11. DYNAMIC PARTITION SYSTEM REQUIRED", link:"https://pixeldrain.com/u/3vToJBVv"}, // rom slot 1
-      {name:"HyperOS 4.0.0.16 Xiaomi 17 Port", version:"v5.0", maintainer:"By @proshivalovka", status:"active", note:"HyperOS 4.0.0.16 - Android 17 Port - v5.0 Release Build Ported from: Xiaomi 17. DYNAMIC PARTITION SYSTEM REQUIRED", link:"https://pixeldrain.com/u/Gpvc5ZoD"}, // rom slot 2
-      {name:"ColorOS 16.0.7 unknown Port", version:"Test 16", maintainer:"By @proshivalovka", status:"active", note:"ColorOS16.0.7 - Android 16 Port - Test 16 Ported from: Unknown. DYNAMIC PARTITION SYSTEM REQUIRED - Need to expand Cust to 8GB", link:"https://pixeldrain.com/u/8U5CwkMZ"}, // rom slot 3
-      {name:"ColorOS 15.0.2 Oneplus 13T Port", version:"Test 6", maintainer:"By @voxelsy", status:"eol", note:"ColorOS 15.0.2 - Android 15 Port - Test 6 EOL Ported from: OnePlus 13T. DYNAMIC PARTITION SYSTEM REQUIRED - Need to expand Cust to 8GB", link:"https://pixeldrain.com/u/DEmpW4oc"}, // rom slot 4
-      {name:"FlymeAIOS 11.2 Meizu 20 Pro Port", version:"Test 5", maintainer:"By @Nyako_Desu", status:"active", note:"FlymeAIOS 11.2 - Android 14 Port - Test 5 Ported from: Meizu 20 Pro. DYNAMIC PARTITION SYSTEM REQUIRED", link:"https://pixeldrain.com/u/Db62v5kC"}, // rom slot 5
+      {name:"OxygenOS 16 - 16.0.5 Oneplus 11 Port", version:"v1.0", maintainer:"By @Deyn_Zypher & @voxelsy", status:"active", note:" OxygenOS 16.0.5 - Android 16 Port - V1.0 Release Build Ported from: OnePlus 11. DYNAMIC PARTITION SYSTEM REQUIRED", link:"https://pixeldrain.com/u/3vToJBVv"}, // rom slot 1
+      {name:"HyperOS 4 - 4.0.0.16 Xiaomi 17 Port", version:"v5.0", maintainer:"By @proshivalovka", status:"active", note:"HyperOS 4.0.0.16 - Android 17 Port - v5.0 Release Build Ported from: Xiaomi 17. DYNAMIC PARTITION SYSTEM REQUIRED", link:"https://pixeldrain.com/u/Gpvc5ZoD"}, // rom slot 2
+      {name:"ColorOS 16 - 16.0.7 unknown Port", version:"Test 16", maintainer:"By @proshivalovka", status:"active", note:"ColorOS16.0.7 - Android 16 Port - Test 16 Ported from: Unknown. DYNAMIC PARTITION SYSTEM REQUIRED - Need to expand Cust to 8GB", link:"https://pixeldrain.com/u/8U5CwkMZ"}, // rom slot 3
+      {name:"ColorOS 15 - 15.0.2 Oneplus 13T Port", version:"Test 6", maintainer:"By @voxelsy", status:"eol", note:"ColorOS 15.0.2 - Android 15 Port - Test 6 EOL Ported from: OnePlus 13T. DYNAMIC PARTITION SYSTEM REQUIRED - Need to expand Cust to 8GB", link:"https://pixeldrain.com/u/DEmpW4oc"}, // rom slot 4
+      {name:"FlymeAIOS 11 - 11.2 Meizu 20 Pro Port", version:"Test 5", maintainer:"By @Nyako_Desu", status:"active", note:"FlymeAIOS 11.2 - Android 14 Port - Test 5 Ported from: Meizu 20 Pro. DYNAMIC PARTITION SYSTEM REQUIRED", link:"https://pixeldrain.com/u/Db62v5kC"}, // rom slot 5
       {name:"", version:"", maintainer:"", status:"active", note:"", link:""}, // rom slot 6
       {name:"", version:"", maintainer:"", status:"active", note:"", link:""}, // rom slot 7
       {name:"", version:"", maintainer:"", status:"active", note:"", link:""}, // rom slot 8
@@ -384,13 +387,13 @@ const DEVICES = [
   },
   {
     // ===== DEVICE 4 =====
-    id:"device-04", brand:"", name:"", codename:"",
-    chipset:"", released:"", status:"active",
+    id:"device-04", brand:"Xiaomi", name:"Redmi 4X", codename:"Santoni",
+    chipset:"Snapdragon 435", released:"Mar 2017", status:"active",
     roms:[
-      {name:"", version:"", maintainer:"", status:"active", note:"", link:""}, // rom slot 1
-      {name:"", version:"", maintainer:"", status:"active", note:"", link:""}, // rom slot 2
-      {name:"", version:"", maintainer:"", status:"active", note:"", link:""}, // rom slot 3
-      {name:"", version:"", maintainer:"", status:"active", note:"", link:""}, // rom slot 4
+      {name:"HyperOS 4 - 4.0.0.16 Beta Xiaomi 17 Port", version:"v2.0", maintainer:"By @alpha269", status:"exp", note:"HyperOS 4.0.0.16 Beta - Android 17 Port - v2.0 Beta / Experimental Release Build Ported from: Xiaomi 17. Not recommended for 2/16 configuration", link:"https://alphas-trashdump.github.io/#/r/Mi8937/hyperos-4.0.0.16-beta"}, // rom slot 1
+      {name:"HyperOS 3 - 3.0.313.0 Redmi K70 Port", version:"v1.0", maintainer:"By @alpha269", status:"beta", note:"HyperOS 3.0.313.0 - Android 16 Port - v1.0 Beta Release Build Ported from: Redmi K70. High battery consumption!", link:"https://alphas-trashdump.github.io/#/r/Mi8937/hyperos-3-0-313-0"}, // rom slot 2
+      {name:"HyperOS 2 - 2.0.2.0 Beta Redmi K50 Gaming Port", version:"v2.0", maintainer:"By @alpha269", status:"beta", note:"HyperOS 2.0.2.0 - Android 14 Port - v2.0 Beta Release Build Ported from: Redmi K50 Gaming. The ROM needs 4-5 hours to settle and optimise battery and performance after the first boot.", link:"https://alphas-trashdump.github.io/#/r/santoni/hyperos-2-0-2-0-beta-v2"}, // rom slot 3
+      {name:"HyperOS 1 - 1.0.15.0 Unknown Port", version:"v1.0", maintainer:"By @alpha269", status:"active", note:"HyperOS 1.0.15.0 - Android 14 Port - v1.0 Stable Release Build", link:"https://alphas-trashdump.github.io/#/r/Mi8937/hyperos-1-0-15-0"}, // rom slot 4
       {name:"", version:"", maintainer:"", status:"active", note:"", link:""}, // rom slot 5
       {name:"", version:"", maintainer:"", status:"active", note:"", link:""}, // rom slot 6
       {name:"", version:"", maintainer:"", status:"active", note:"", link:""}, // rom slot 7
@@ -400,34 +403,34 @@ const DEVICES = [
     ],
     recovery:[
       {name:"TWRP", version:"", maintainer:"", status:"active", note:"", link:""}, // recovery slot 1
-      {name:"OrangeFox", version:"", maintainer:"", status:"active", note:"", link:""} // recovery slot 2
+      {name:"OrangeFox", version:"R12.0", maintainer:"By @Termuxtest2", status:"beta", note:"UNOFFICIAL Release: 08/06/26", link:"https://pixeldrain.com/u/cZtYhFZP"} // recovery slot 2
     ]
   },
   {
     // ===== DEVICE 5 =====
-    id:"device-05", brand:"", name:"", codename:"",
-    chipset:"", released:"", status:"active",
+    id:"device-05", brand:"Samsung", name:"Galaxy S6", codename:"zeroflte",
+    chipset:"Exynos 7420", released:"Mar 2015", status:"eol",
     roms:[
-      {name:"", version:"", maintainer:"", status:"active", note:"", link:""}, // rom slot 1
-      {name:"", version:"", maintainer:"", status:"active", note:"", link:""}, // rom slot 2
-      {name:"", version:"", maintainer:"", status:"active", note:"", link:""}, // rom slot 3
-      {name:"", version:"", maintainer:"", status:"active", note:"", link:""}, // rom slot 4
-      {name:"", version:"", maintainer:"", status:"active", note:"", link:""}, // rom slot 5
-      {name:"", version:"", maintainer:"", status:"active", note:"", link:""}, // rom slot 6
-      {name:"", version:"", maintainer:"", status:"active", note:"", link:""}, // rom slot 7
-      {name:"", version:"", maintainer:"", status:"active", note:"", link:""}, // rom slot 8
-      {name:"", version:"", maintainer:"", status:"active", note:"", link:""}, // rom slot 9
-      {name:"", version:"", maintainer:"", status:"active", note:"", link:""} // rom slot 10
+      {name:"LineageOS 20 Android 13", version:"V20", maintainer:"By fakemanoan", status:"active", note:"Android 13 ROM SElinux permissive", link:"https://xdaforums.com/t/rom-unofficial-13-0-lineageos-20.4586295/"}, // rom slot 1
+      {name:"LineageOS 19.1 Android 12.1", version:"V19.1", maintainer:"By fakemanoan", status:"active", note:"Android 12.1 ROM SElinux permissive", link:"https://xdaforums.com/t/rom-unofficial-12-1-lineageos-19-1.4483531/"}, // rom slot 2
+      {name:"LineageOS 18.1 Android 11.0", version:"V18.1", maintainer:"By fakemanoan", status:"active", note:"Android 11.0 ROM SElinux enforcing", link:"https://xdaforums.com/t/rom-11-0-lineageos-18-1-selinux-enforcing.4685962/"}, // rom slot 3
+      {name:"FloydQ ROM Note8 Port One UI 1.0", version:"V5.1", maintainer:"By ananjaser1211", status:"active", note:"One UI 1.0 Port from: Galaxy Note8 for the Exynos 7420 Series", link:"https://xdaforums.com/t/rom-9-0-oneui-n920x-g92x-floyd-note8-port-v5-1.3952895/post-79984582"}, // rom slot 4
+      {name:"AICP (Android Ice Cold Project) Android 13", version:"V18.0", maintainer:"By Lost-Entepreneur439", status:"active", note:"A stable well known Android 13 ROM for S6", link:"https://xdaforums.com/t/rom-unofficial-13-zeroflte-zerolte-zenlte-noblelte-aicp-android-ice-cold-project-18-0-for-samsung-galaxy-s6-s6-edge-s6-edge-note5.4796321/post-90695200"}, // rom slot 5
+      {name:"CrDroid 9.0 Android 13", version:"V9.0", maintainer:"By fakemanoan", status:"active", note:"A popular Android 13 ROM for S6", link:"https://xdaforums.com/t/rom-unofficial-13-0-crdroid-9-for-samsung-galaxy-s6.4650597/"}, // rom slot 6
+      {name:"LineageOS 21 Android 14", version:"v21", maintainer:"By fakemanoan", status:"beta / unofficial", note:"Still an experimental Android 14 LOS21 ROM Unstable for daily use", link:"https://xdaforums.com/t/early-alpha-unofficial-unstable-14-lineage-21.4756796/"}, // rom slot 7
+      {name:"SparkOS 13.8 Android 13", version:"v13.8", maintainer:"By derveror1", status:"eol", note:"Android 13 AOSP based ROM for Galaxy S6 Unstable", link:"https://xdaforums.com/t/rom-13-unofficial-sparkos-13-8-zerofltexx-zeroltexx-discontinued.4634491/"}, // rom slot 8
+      {name:"Evolution X 7.9.8 Android 13", version:"v7.9.8", maintainer:"By derveror1", status:"eol", note:"eol Stable And pixel features Rich ROM", link:"https://xdaforums.com/t/rom-13-zerofltexx-zeroltexx-unofficial-evolution-x-7-9-8-discontinued.4630673/"}, // rom slot 9
+      {name:"PixelExperience Plus AOSP Android 11", version:"v11", maintainer:"By fakemanoan", status:"eol", note:"AOSP-based ROM for S6 Stable", link:"https://github.com/fakemanoan/PixelExperience-7420-Release/releases/tag/release"} // rom slot 10
     ],
     recovery:[
-      {name:"TWRP", version:"", maintainer:"", status:"active", note:"", link:""}, // recovery slot 1
+      {name:"TWRP", version:"v3.7.0-9-2", maintainer:"By fakemanoan", status:"active", note:"Stable modded version of TWRP highly recommended for this device", link:"https://github.com/fakemanoan/TWRP-Releases/releases/download/TWRP_3.7.0-9-2/TWRP_3.7.0-9-2-fakeman_zeroflte.img"}, // recovery slot 1
       {name:"OrangeFox", version:"", maintainer:"", status:"active", note:"", link:""} // recovery slot 2
     ]
   },
   {
     // ===== DEVICE 6 =====
-    id:"device-06", brand:"", name:"", codename:"",
-    chipset:"", released:"", status:"active",
+    id:"device-06", brand:"Samsung", name:"Galaxy S9 Plus", codename:"star2lte",
+    chipset:"Exynos 9810", released:"Aug 2018", status:"active",
     roms:[
       {name:"", version:"", maintainer:"", status:"active", note:"", link:""}, // rom slot 1
       {name:"", version:"", maintainer:"", status:"active", note:"", link:""}, // rom slot 2
@@ -447,8 +450,8 @@ const DEVICES = [
   },
   {
     // ===== DEVICE 7 =====
-    id:"device-07", brand:"", name:"", codename:"",
-    chipset:"", released:"", status:"active",
+    id:"device-07", brand:"Samsung", name:"Galaxy S10", codename:"beyond1lte",
+    chipset:"Exynos 9820", released:"Aug 2019", status:"active",
     roms:[
       {name:"", version:"", maintainer:"", status:"active", note:"", link:""}, // rom slot 1
       {name:"", version:"", maintainer:"", status:"active", note:"", link:""}, // rom slot 2
@@ -468,8 +471,8 @@ const DEVICES = [
   },
   {
     // ===== DEVICE 8 =====
-    id:"device-08", brand:"", name:"", codename:"",
-    chipset:"", released:"", status:"active",
+    id:"device-08", brand:"Samsung", name:"Galaxy S9", codename:"starlte",
+    chipset:"Exynos 9810", released:"2018", status:"active",
     roms:[
       {name:"", version:"", maintainer:"", status:"active", note:"", link:""}, // rom slot 1
       {name:"", version:"", maintainer:"", status:"active", note:"", link:""}, // rom slot 2
@@ -489,8 +492,8 @@ const DEVICES = [
   },
   {
     // ===== DEVICE 9 =====
-    id:"device-09", brand:"", name:"", codename:"",
-    chipset:"", released:"", status:"active",
+    id:"device-09", brand:"Google", name:"Pixel 6 Pro", codename:"Raven",
+    chipset:"Google Tensor", released:"Oct 2021", status:"active",
     roms:[
       {name:"", version:"", maintainer:"", status:"active", note:"", link:""}, // rom slot 1
       {name:"", version:"", maintainer:"", status:"active", note:"", link:""}, // rom slot 2
@@ -510,8 +513,8 @@ const DEVICES = [
   },
   {
     // ===== DEVICE 10 =====
-    id:"device-10", brand:"", name:"", codename:"",
-    chipset:"", released:"", status:"active",
+    id:"device-10", brand:"OnePlus", name:"OnePlus 8", codename:"instantnoodle",
+    chipset:"Snapdragon 865", released:"Apr 2020", status:"active",
     roms:[
       {name:"", version:"", maintainer:"", status:"active", note:"", link:""}, // rom slot 1
       {name:"", version:"", maintainer:"", status:"active", note:"", link:""}, // rom slot 2
@@ -639,7 +642,7 @@ const DEVICES = [
 let activeBrand = 'all';
 
 function statusLabel(s){
-  return {active:"actively maintained", beta:"beta / unofficial", eol:"end of life"}[s] || s;
+  return {active:"actively maintained", beta:"beta / unofficial", eol:"end of life", exp:"experimental"}[s] || s;
 }
 
 function setBrand(brand, el){
