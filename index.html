@@ -145,7 +145,7 @@
     background:var(--glass);
     border:1px solid var(--glass-border);
     border-radius:20px;
-    padding:22px;
+    padding:22px; padding-right:78px;
     cursor:pointer;
     position:relative;
     overflow:hidden;
@@ -180,6 +180,15 @@
   .dc-rom-count{font-family:var(--mono);}
   .arrow{opacity:0.5; transition:all 0.15s ease; color:var(--blue);}
 
+  .dc-thumb{
+    position:absolute; top:20px; right:20px; width:44px; height:64px;
+    border-radius:9px; overflow:hidden;
+    background:rgba(255,255,255,0.04); border:1px dashed var(--glass-border);
+    display:flex; align-items:center; justify-content:center;
+  }
+  .dc-thumb img{ width:100%; height:100%; object-fit:cover; display:block; }
+  .dc-thumb svg{ opacity:0.35; width:20px; height:20px; }
+
   .empty-state{
     text-align:center; padding:60px 20px; color:var(--paper-dim);
     font-family:var(--mono); font-size:13px; grid-column:1/-1;
@@ -202,10 +211,19 @@
   .back-link:hover{color:var(--blue);}
   .detail-header{
     background:var(--glass); border:1px solid var(--glass-border); border-radius:24px;
-    padding:28px 28px 20px; margin-bottom:30px;
+    padding:28px 28px 20px; margin-bottom:30px; position:relative;
     backdrop-filter:var(--blur); -webkit-backdrop-filter:var(--blur);
     box-shadow: inset 0 1px 0 rgba(255,255,255,0.14), 0 12px 40px rgba(5,9,20,0.3);
   }
+  .detail-header-inner{ padding-right:130px; }
+  .detail-thumb{
+    position:absolute; top:26px; right:26px; width:96px; height:138px;
+    border-radius:14px; overflow:hidden;
+    background:rgba(255,255,255,0.04); border:1px dashed var(--glass-border);
+    display:flex; align-items:center; justify-content:center;
+  }
+  .detail-thumb img{ width:100%; height:100%; object-fit:cover; display:block; }
+  .detail-thumb svg{ opacity:0.35; width:34px; height:34px; }
   .detail-eyebrow{font-family:var(--mono); font-size:12px; color:var(--paper-dim); margin-bottom:10px; text-transform:uppercase; letter-spacing:0.04em;}
   .detail-title{font-size:clamp(28px,4vw,40px); font-weight:700; margin:0 0 10px; color:var(--paper); letter-spacing:-0.01em;}
   .detail-codename{font-family:var(--mono); color:var(--blue); font-size:14px; margin-bottom:18px;}
@@ -285,6 +303,10 @@
     .hero-stat{flex:1 1 50%;}
     .rom-item{align-items:flex-start;}
     .rom-link{width:100%; text-align:center;}
+    .device-card{ padding-right:22px; }
+    .dc-thumb{ position:static; width:100%; height:96px; margin-bottom:14px; }
+    .detail-header-inner{ padding-right:0; }
+    .detail-thumb{ position:static; width:100%; height:140px; margin-bottom:18px; }
   }
 
   /* ================= LOADING SCREEN ================= */
@@ -332,26 +354,37 @@
   }
 
   /* macOS-style spinning tick loader */
-  .mac-spinner{ position:relative; width:34px; height:34px; opacity:0; animation: rest-in .5s ease-out .8s forwards; }
-  .mac-spinner div{
-    position:absolute; top:2px; left:50%; width:2.5px; height:9px; margin-left:-1.25px;
-    border-radius:2px; background:var(--paper); opacity:0.2;
-    transform-origin:1.25px 15px;
-    animation: mac-fade 1s linear infinite;
+  /* old-school recovery-mode Android bot, ears wiggling while it “boots” */
+  .android-bot{
+    position:relative; width:56px; height:70px; opacity:0;
+    animation: rest-in .5s ease-out .8s forwards, bot-bounce 1.6s ease-in-out 1.3s infinite;
   }
-  .mac-spinner div:nth-child(1){ transform:rotate(0deg); animation-delay:0s; }
-  .mac-spinner div:nth-child(2){ transform:rotate(30deg); animation-delay:-0.0833s; }
-  .mac-spinner div:nth-child(3){ transform:rotate(60deg); animation-delay:-0.1667s; }
-  .mac-spinner div:nth-child(4){ transform:rotate(90deg); animation-delay:-0.25s; }
-  .mac-spinner div:nth-child(5){ transform:rotate(120deg); animation-delay:-0.3333s; }
-  .mac-spinner div:nth-child(6){ transform:rotate(150deg); animation-delay:-0.4167s; }
-  .mac-spinner div:nth-child(7){ transform:rotate(180deg); animation-delay:-0.5s; }
-  .mac-spinner div:nth-child(8){ transform:rotate(210deg); animation-delay:-0.5833s; }
-  .mac-spinner div:nth-child(9){ transform:rotate(240deg); animation-delay:-0.6667s; }
-  .mac-spinner div:nth-child(10){ transform:rotate(270deg); animation-delay:-0.75s; }
-  .mac-spinner div:nth-child(11){ transform:rotate(300deg); animation-delay:-0.8333s; }
-  .mac-spinner div:nth-child(12){ transform:rotate(330deg); animation-delay:-0.9167s; }
-  @keyframes mac-fade{ 0%{opacity:1;} 100%{opacity:0.2;} }
+  .bot-antenna{
+    position:absolute; top:2px; width:3px; height:15px; border-radius:2px;
+    background:var(--mint); transform-origin:bottom center;
+  }
+  .bot-antenna.left{ left:16px; transform:rotate(-20deg); animation: ear-wiggle-left 1s ease-in-out infinite; }
+  .bot-antenna.right{ right:16px; transform:rotate(20deg); animation: ear-wiggle-right 1s ease-in-out infinite; }
+  .bot-head{
+    position:absolute; top:16px; left:8px; width:40px; height:22px;
+    background:var(--mint); border-radius:20px 20px 0 0; overflow:hidden;
+  }
+  .bot-eye{ position:absolute; top:9px; width:3px; height:6px; border-radius:2px; background:var(--deep); }
+  .bot-eye.left{ left:11px; }
+  .bot-eye.right{ right:11px; }
+  .bot-body{
+    position:absolute; top:36px; left:4px; width:48px; height:26px;
+    background:var(--mint); border-radius:8px;
+  }
+  .bot-arm{ position:absolute; top:36px; width:6px; height:22px; border-radius:3px; background:var(--mint); }
+  .bot-arm.left{ left:-4px; }
+  .bot-arm.right{ right:-4px; }
+  .bot-leg{ position:absolute; top:60px; width:9px; height:10px; border-radius:0 0 4px 4px; background:var(--mint); }
+  .bot-leg.left{ left:12px; }
+  .bot-leg.right{ right:12px; }
+  @keyframes bot-bounce{ 0%,100%{ transform:translateY(0); } 50%{ transform:translateY(-4px); } }
+  @keyframes ear-wiggle-left{ 0%,100%{ transform:rotate(-20deg); } 50%{ transform:rotate(-34deg); } }
+  @keyframes ear-wiggle-right{ 0%,100%{ transform:rotate(20deg); } 50%{ transform:rotate(34deg); } }
 
   /* ================= BACKGROUND ORBIT PARTICLES ================= */
   .bg-orbits{ position:fixed; inset:0; z-index:-1; overflow:hidden; pointer-events:none; }
@@ -387,7 +420,7 @@
 
   @media (prefers-reduced-motion: reduce){
     .loading-logo .slash, .loading-logo .g-letter, .loading-logo .rest,
-    .loading-caption, .mac-spinner, .mac-spinner div,
+    .loading-caption, .android-bot, .android-bot *,
     .bg-orbits .particle, .bg-orbits .orbit-ring, .bg-orbits .orbit-ring .orbit-dot{
       animation:none !important; opacity:1 !important; transform:none !important;
     }
@@ -400,9 +433,12 @@
   <div class="loading-logo">
     <span class="slash">/</span><span class="g-letter">G</span><span class="rest">oROMS</span>
   </div>
-  <div class="mac-spinner">
-    <div></div><div></div><div></div><div></div><div></div><div></div>
-    <div></div><div></div><div></div><div></div><div></div><div></div>
+  <div class="android-bot">
+    <div class="bot-antenna left"></div><div class="bot-antenna right"></div>
+    <div class="bot-head"><div class="bot-eye left"></div><div class="bot-eye right"></div></div>
+    <div class="bot-body"></div>
+    <div class="bot-arm left"></div><div class="bot-arm right"></div>
+    <div class="bot-leg left"></div><div class="bot-leg right"></div>
   </div>
   <p class="loading-caption">booting directory…</p>
 </div>
@@ -475,7 +511,7 @@
 const DEVICES = [
   {
     // ===== DEVICE 1 =====
-    id:"device-01", brand:"Xiaomi", name:"Redmi Note 11", codename:"Spes/n",maintainer:"@Dinosaurtech_",
+    id:"device-01", brand:"Xiaomi", name:"Redmi Note 11", codename:"Spes/n",maintainer:"@Dinosaurtech_", image:"images/spes.jpg", // phone photo URL
     chipset:"snapdragon 680", released:"Oct 2021", status:"active",
     roms:[
       {name:"ColorOS 16.0.5 by Jesus", version:"v16.0.5", maintainer:"By Jesus", status:"active", note:"ColorOS 16.0.5 - Android 16 Port - V1.0 Release Build Ported from: Oneplus Ace 3 for: Redmi note 11 spes/n Models)", link:"https://pixeldrain.com/u/nuUD8zki"}, // rom slot 1
@@ -496,7 +532,7 @@ const DEVICES = [
   },
   {
     // ===== DEVICE 2 =====
-    id:"device-02", brand:"Samsung", name:"Galaxy S7", codename:"G930F / herolte",maintainer:"@G",
+    id:"device-02", brand:"Samsung", name:"Galaxy S7", codename:"G930F / herolte",maintainer:"@G", image:"images/s7.jpg", // phone photo URL
     chipset:"Exynos 8890 (SD820 not supported) ", released:"Feb 2016", status:"active",
     roms:[
       {name:"Eylem-ROM S22 Ultra Port One UI 8.0", version:"v1.0", maintainer:"By Elyem U", status:"active", note:"OneUI 8.0 - Android 16 Port - V1.0 Release Build Ported from: Samsung Galaxy S22 Ultra for: Samsung Galaxy S7/S7E/N7/N7FE (F/FD/S/K/L/W8 Exynos Models)", link:"https://xdaforums.com/t/eylem-rom-v1-0-s22-ultra-port-one-ui-8-0-b-for-galaxy-s7-s7e-n7-n7fe.4797481/"}, // rom slot 1
@@ -517,28 +553,32 @@ const DEVICES = [
   },
   {
     // ===== DEVICE 3 =====
-    id:"device-03", brand:"Xiaomi", name:"Redmi K20 Pro (Mi 9T Pro)", codename:"Raphael",maintainer:"@S7tech",
+    id:"device-03", brand:"Xiaomi", name:"Redmi K20 Pro (Mi 9T Pro)", codename:"Raphael",maintainer:"@S7tech", image:"images/raphael.jpg", // phone photo URL
     chipset:"Snapdragon 855", released:"May 2019", status:"active",
     roms:[
-      {name:"OxygenOS 16 - 16.0.5 Oneplus 11 Port", version:"v1.0", maintainer:"By @Deyn_Zypher & @voxelsy", status:"active", note:" OxygenOS 16.0.5 - Android 16 Port - V1.0 Release Build Ported from: OnePlus 11. DYNAMIC PARTITION SYSTEM REQUIRED", link:"https://pixeldrain.com/u/3vToJBVv"}, // rom slot 1
+      {name:"OneUI 8.5 - Galaxy M55 Port", version:"v1.0", maintainer:"By @Qwekte", status:"active", note:" OneUI 8.5 - Android 16 Port - V1.0 Release Build Ported from: Galaxy M55. DYNAMIC PARTITION SYSTEM REQUIRED", link:"https://drive.google.com/file/d/1zXz3OnjWihZ01F8vRTUix1HiueEmHsHn/view"}, // rom slot 1
       {name:"HyperOS 4 - 4.0.0.16 Xiaomi 17 Port", version:"v5.0", maintainer:"By @proshivalovka", status:"active", note:"HyperOS 4.0.0.16 - Android 17 Port - v5.0 Release Build Ported from: Xiaomi 17. DYNAMIC PARTITION SYSTEM REQUIRED", link:"https://pixeldrain.com/u/Gpvc5ZoD"}, // rom slot 2
-      {name:"ColorOS 16 - 16.0.7 unknown Port", version:"Test 16", maintainer:"By @proshivalovka", status:"active", note:"ColorOS16.0.7 - Android 16 Port - Test 16 Ported from: Unknown. DYNAMIC PARTITION SYSTEM REQUIRED - Need to expand Cust to 8GB", link:"https://pixeldrain.com/u/8U5CwkMZ"}, // rom slot 3
-      {name:"ColorOS 15 - 15.0.2 Oneplus 13T Port", version:"Test 6", maintainer:"By @voxelsy", status:"eol", note:"ColorOS 15.0.2 - Android 15 Port - Test 6 EOL Ported from: OnePlus 13T. DYNAMIC PARTITION SYSTEM REQUIRED - Need to expand Cust to 8GB", link:"https://pixeldrain.com/u/DEmpW4oc"}, // rom slot 4
-      {name:"FlymeAIOS 11 - 11.2 Meizu 20 Pro Port", version:"Test 5", maintainer:"By @Nyako_Desu", status:"active", note:"FlymeAIOS 11.2 - Android 14 Port - Test 5 Ported from: Meizu 20 Pro. DYNAMIC PARTITION SYSTEM REQUIRED", link:"https://pixeldrain.com/u/Db62v5kC"}, // rom slot 5
-      {name:"", version:"", maintainer:"", status:"active", note:"", link:""}, // rom slot 6
-      {name:"", version:"", maintainer:"", status:"active", note:"", link:""}, // rom slot 7
-      {name:"", version:"", maintainer:"", status:"active", note:"", link:""}, // rom slot 8
-      {name:"", version:"", maintainer:"", status:"active", note:"", link:""}, // rom slot 9
-      {name:"", version:"", maintainer:"", status:"active", note:"", link:""} // rom slot 10
+      {name:"HyperOS 3.3 A16 - 3.0.303 Redmi K90 Port", version:"R4.1", maintainer:"By @KAMIYUKI", status:"active", note:"HyperOS 3.0.303.0 - Android 16 Port - R4.1 Release Build Ported from: Redmi K90. DYNAMIC PARTITION SYSTEM REQUIRED. Lot of Bugs !!", link:"https://drive.google.com/file/d/1fjCwa1tTWVvQm4SI9EKKumUst5r3xr0K/view"}, // rom slot 3
+      {name:"HyperOS 3.3 A17 - 3.0.330.9 Xiaomi 17 Ultra Port", version:"Test 3", maintainer:"By @CML & @voxelsy", status:"active", note:"HyperOS 3.0.330.9 - Android 17 Port - Test 3 Release Build Ported from: Xiaomi 17 Ultra. DYNAMIC PARTITION SYSTEM REQUIRED", link:"https://pixeldrain.com/u/4KHM8Nbg"}, // rom slot 4
+      {name:"OxygenOS 16 - 16.0.5 Oneplus 11 Port", version:"v1.0", maintainer:"By @Deyn_Zypher & @voxelsy", status:"active", note:" OxygenOS 16.0.5 - Android 16 Port - V1.0 Release Build Ported from: OnePlus 11. DYNAMIC PARTITION SYSTEM REQUIRED", link:"https://pixeldrain.com/u/3vToJBVv"}, // rom slot 5
+      {name:"ColorOS 16 - 16.0.7 unknown Port", version:"Test 16", maintainer:"By @proshivalovka", status:"active", note:"ColorOS16.0.7 - Android 16 Port - Test 16 Ported from: Unknown. DYNAMIC PARTITION SYSTEM REQUIRED - Need to expand Cust to 8GB", link:"https://pixeldrain.com/u/8U5CwkMZ"}, // rom slot 6
+      {name:"FlymeAIOS 2 - 12.25.5 Meizu 20 Pro Port", version:"Test 1", maintainer:"By @CML & @voxelsy", status:"active", note:"FlymeAIOS 2 - Android 15 Port - Test 1 Release Build Ported from: Meizu 20 Pro. DYNAMIC PARTITION SYSTEM REQUIRED", link:"https://pixeldrain.com/u/KDBJ1vtv"}, // rom slot 7
+      {name:"FlymeAIOS 11 - 11.2 Meizu 20 Pro Port", version:"Test 5", maintainer:"By @Nyako_Desu", status:"active", note:"FlymeAIOS 11.2 - Android 14 Port - Test 5 Ported from: Meizu 20 Pro. DYNAMIC PARTITION SYSTEM REQUIRED", link:"https://pixeldrain.com/u/Db62v5kC"}, // rom slot 8
+      {name:"ColorOS 15 - 15.0.2 Oneplus 13T Port", version:"Test 6", maintainer:"By @voxelsy", status:"eol", note:"ColorOS 15.0.2 - Android 15 Port - Test 6 EOL Ported from: OnePlus 13T. DYNAMIC PARTITION SYSTEM REQUIRED - Need to expand Cust to 8GB", link:"https://pixeldrain.com/u/DEmpW4oc"}, // rom slot 9
+      {name:"One UI 5.0 - Galaxy A03 Port", version:"Test 1", maintainer:"By @voxelsy", status:"eol", note:"One UI 5.0 - Android 13 Port - Test 1 Release Build Ported from: Galaxy A03. DYNAMIC PARTITION SYSTEM REQUIRED", link:"https://pixeldrain.com/u/SBLefEhy"}, // rom slot 10
     ],
     recovery:[
-      {name:"TWRP", version:"", maintainer:"", status:"active", note:"", link:""}, // recovery slot 1
+      {name:"TWRP", version:"", maintainer:"", status:"Not supported", note:"", link:""}, // recovery slot 1
       {name:"OrangeFox", version:"R12 Unified", maintainer:"By @IBoreasI", status:"beta", note:"UNOFFICIAL Released: 01/09/26", link:"https://github.com/QCerberusQ/ofox_device_xiaomi_raphael/releases/tag/OrangeFox-R12.0"} // recovery slot 2
+    ],
+    addons:[
+      {name:"K20P_cust_8GB", version:"v1.0", maintainer:"By @voxelsy", status:"active", note:"8GB Cust expansion, only for Raphael", link:"https://pixeldrain.com/u/HnLPNHTo"}, // addon slot 1
+      {name:"Legacy to Retrofit Dynamic", version:"v1.0", maintainer:"By @raphael_alpha", status:"active", note:"Make your Raphael support dynamic partitions. Required for most Port Roms!", link:"https://sourceforge.net/projects/crdroid/files/raphael/10.x/recovery/legacy%20to%20retrofit%20dynamic%20by%20%40raphael_alpha.zip/download"} // addon slot 2
     ]
   },
   {
     // ===== DEVICE 4 =====
-    id:"device-04", brand:"Xiaomi", name:"Redmi 4X", codename:"Santoni",maintainer:"@S7tech",
+    id:"device-04", brand:"Xiaomi", name:"Redmi 4X", codename:"Santoni",maintainer:"@S7tech", image:"images/4x.jpg", // phone photo URL
     chipset:"Snapdragon 435", released:"Mar 2017", status:"active",
     roms:[
       {name:"HyperOS 4 - 4.0.0.16 Beta Xiaomi 17 Port", version:"v2.0", maintainer:"By @alpha269", status:"exp", note:"HyperOS 4.0.0.16 Beta - Android 17 Port - v2.0 Beta / Experimental Release Build Ported from: Xiaomi 17. Not recommended for 2/16 configuration", link:"https://alphas-trashdump.github.io/#/r/Mi8937/hyperos-4.0.0.16-beta"}, // rom slot 1
@@ -553,13 +593,13 @@ const DEVICES = [
       {name:"", version:"", maintainer:"", status:"active", note:"", link:""} // rom slot 10
     ],
     recovery:[
-      {name:"TWRP", version:"", maintainer:"", status:"active", note:"", link:""}, // recovery slot 1
+      {name:"TWRP", version:"", maintainer:"", status:"Not supported", note:"", link:""}, // recovery slot 1
       {name:"OrangeFox", version:"R12.0", maintainer:"By @Termuxtest2", status:"beta", note:"UNOFFICIAL Release: 08/06/26", link:"https://pixeldrain.com/u/cZtYhFZP"} // recovery slot 2
     ]
   },
   {
     // ===== DEVICE 5 =====
-    id:"device-05", brand:"Samsung", name:"Galaxy S6", codename:"zeroflte",maintainer:"@G",
+    id:"device-05", brand:"Samsung", name:"Galaxy S6", codename:"zeroflte",maintainer:"@G", image:"images/s6.jpg", // phone photo URL
     chipset:"Exynos 7420", released:"Mar 2015", status:"eol",
     roms:[
       {name:"LineageOS 20 Android 13", version:"V20", maintainer:"By fakemanoan", status:"active", note:"Android 13 ROM SElinux permissive", link:"https://xdaforums.com/t/rom-unofficial-13-0-lineageos-20.4586295/"}, // rom slot 1
@@ -580,15 +620,15 @@ const DEVICES = [
   },
   {
     // ===== DEVICE 6 =====
-    id:"device-06", brand:"Samsung", name:"Galaxy S9 Plus", codename:"star2lte",maintainer:"",
+    id:"device-06", brand:"Samsung", name:"Galaxy S9 Plus", codename:"star2lte",maintainer:"", image:"images/s9+.jpg", // phone photo URL
     chipset:"Exynos 9810", released:"Aug 2018", status:"active",
     roms:[
-      {name:"", version:"", maintainer:"", status:"active", note:"", link:""}, // rom slot 1
-      {name:"", version:"", maintainer:"", status:"active", note:"", link:""}, // rom slot 2
-      {name:"", version:"", maintainer:"", status:"active", note:"", link:""}, // rom slot 3
-      {name:"", version:"", maintainer:"", status:"active", note:"", link:""}, // rom slot 4
-      {name:"", version:"", maintainer:"", status:"active", note:"", link:""}, // rom slot 5
-      {name:"", version:"", maintainer:"", status:"active", note:"", link:""}, // rom slot 6
+      {name:"UN1CA One UI 8.0", version:"V1.0.0", maintainer:"By Eend15", status:"active", note:" A One UI 8.0 port for Exynos 9810 Series Ported from S22.Tuto included on official link. ", link:"https://github.com/Eend15/Unofficial-Un1ca-9810"}, // rom slot 1
+      {name:"Duhan ROM One UI 7.0", version:"V4.3", maintainer:"By duhansysl", status:"active", note:" A One UI 7.0 port for Exynos 9810 Series Ported from S24 FE.Tuto included on official link.", link:"https://xdaforums.com/t/rom-oneui-7-0-galaxy-s9-s9-note9-intl-kor-g960x-g965x-n960x-duhanrom-v4-3-12-05-2026.4749211/"}, // rom slot 2
+      {name:"Noble ROM One UI 7.0", version:"V5.2", maintainer:"By AlexisXDA", status:"active", note:" A One UI 7.0 port for Exynos 9810 Series Ported from S24+.Tuto included on official link.Full port with 08-25 patches", link:"https://xdaforums.com/t/noble-rom-5-2-calabria-iii-oneui-7-0-full-port-08-25-patches-16-08-2025-sm-n960f-fd-n-sm-g96xf-fd-n.4244747/"}, // rom slot 3
+      {name:"Duhan ROM One UI 6.1", version:"V3.21", maintainer:"By duhansysl", status:"active", note:" A One UI 6.1.1 port for Exynos 9810 Series Ported from S22 Ultra.Tuto included on official link.", link:"https://xdaforums.com/t/rom-oneui-6-1-1-galaxy-s9-s9-note9-intl-kor-g960x-g965x-n960x-duhanrom-v3-21-14-05-2026.4743791/"}, // rom slot 4
+      {name:"Noble ROM One UI 6.1", version:"V4.3", maintainer:"By AlexisXDA", status:"active", note:" A One UI 6.1 port for Exynos 9810 Series Ported from S22.Tuto included on official link.", link:"https://xdaforums.com/t/noble-rom-5-2-calabria-iii-oneui-7-0-full-port-08-25-patches-16-08-2025-sm-n960f-fd-n-sm-g96xf-fd-n.4244747/post-89733117"}, // rom slot 5
+      {name:"Noble ROM One UI 5.1", version:"V3.8", maintainer:"By AlexisXDA", status:"active", note:" A One UI 5.1 port for Exynos 9810 Series Ported from S20.Tuto included on official link.", link:"https://xdaforums.com/t/noble-rom-3-8-sila-oneui-5-1-1-full-port-10-23-patches-22-10-2023-sm-n960f-fd-n-sm-g96xf-fd-n.4244747/post-89180544"}, // rom slot 6
       {name:"", version:"", maintainer:"", status:"active", note:"", link:""}, // rom slot 7
       {name:"", version:"", maintainer:"", status:"active", note:"", link:""}, // rom slot 8
       {name:"", version:"", maintainer:"", status:"active", note:"", link:""}, // rom slot 9
@@ -597,11 +637,11 @@ const DEVICES = [
     recovery:[
       {name:"TWRP", version:"", maintainer:"", status:"active", note:"", link:""}, // recovery slot 1
       {name:"OrangeFox", version:"", maintainer:"", status:"active", note:"", link:""} // recovery slot 2
-    ]
+    ],
   },
   {
     // ===== DEVICE 7 =====
-    id:"device-07", brand:"Samsung", name:"Galaxy S10", codename:"beyond1lte",maintainer:"",
+    id:"device-07", brand:"Samsung", name:"Galaxy S10", codename:"beyond1lte",maintainer:"", image:"images/s10.jpg", // phone photo URL
     chipset:"Exynos 9820", released:"Aug 2019", status:"active",
     roms:[
       {name:"", version:"", maintainer:"", status:"active", note:"", link:""}, // rom slot 1
@@ -622,15 +662,15 @@ const DEVICES = [
   },
   {
     // ===== DEVICE 8 =====
-    id:"device-08", brand:"Samsung", name:"Galaxy S9", codename:"starlte",maintainer:"",
+    id:"device-08", brand:"Samsung", name:"Galaxy S9", codename:"starlte",maintainer:"", image:"images/s9.jpg", // phone photo URL
     chipset:"Exynos 9810", released:"2018", status:"active",
     roms:[
-      {name:"", version:"", maintainer:"", status:"active", note:"", link:""}, // rom slot 1
-      {name:"", version:"", maintainer:"", status:"active", note:"", link:""}, // rom slot 2
-      {name:"", version:"", maintainer:"", status:"active", note:"", link:""}, // rom slot 3
-      {name:"", version:"", maintainer:"", status:"active", note:"", link:""}, // rom slot 4
-      {name:"", version:"", maintainer:"", status:"active", note:"", link:""}, // rom slot 5
-      {name:"", version:"", maintainer:"", status:"active", note:"", link:""}, // rom slot 6
+      {name:"UN1CA One UI 8.0", version:"V1.0.0", maintainer:"By Eend15", status:"active", note:" A One UI 8.0 port for Exynos 9810 Series Ported from S22.Tuto included on official link. ", link:"https://github.com/Eend15/Unofficial-Un1ca-9810"}, // rom slot 1
+      {name:"Duhan ROM One UI 7.0", version:"V4.3", maintainer:"By duhansysl", status:"active", note:" A One UI 7.0 port for Exynos 9810 Series Ported from S24 FE.Tuto included on official link.", link:"https://xdaforums.com/t/rom-oneui-7-0-galaxy-s9-s9-note9-intl-kor-g960x-g965x-n960x-duhanrom-v4-3-12-05-2026.4749211/"}, // rom slot 2
+      {name:"Noble ROM One UI 7.0", version:"V5.2", maintainer:"By AlexisXDA", status:"active", note:" A One UI 7.0 port for Exynos 9810 Series Ported from S24+.Tuto included on official link.Full port with 08-25 patches", link:"https://xdaforums.com/t/noble-rom-5-2-calabria-iii-oneui-7-0-full-port-08-25-patches-16-08-2025-sm-n960f-fd-n-sm-g96xf-fd-n.4244747/"}, // rom slot 3
+      {name:"Duhan ROM One UI 6.1", version:"V3.21", maintainer:"By duhansysl", status:"active", note:" A One UI 6.1.1 port for Exynos 9810 Series Ported from S22 Ultra.Tuto included on official link.", link:"https://xdaforums.com/t/rom-oneui-6-1-1-galaxy-s9-s9-note9-intl-kor-g960x-g965x-n960x-duhanrom-v3-21-14-05-2026.4743791/"}, // rom slot 4
+      {name:"Noble ROM One UI 6.1", version:"V4.3", maintainer:"By AlexisXDA", status:"active", note:" A One UI 6.1 port for Exynos 9810 Series Ported from S22.Tuto included on official link.", link:"https://xdaforums.com/t/noble-rom-5-2-calabria-iii-oneui-7-0-full-port-08-25-patches-16-08-2025-sm-n960f-fd-n-sm-g96xf-fd-n.4244747/post-89733117"}, // rom slot 5
+      {name:"Noble ROM One UI 5.1", version:"V3.8", maintainer:"By AlexisXDA", status:"active", note:" A One UI 5.1 port for Exynos 9810 Series Ported from S20.Tuto included on official link.", link:"https://xdaforums.com/t/noble-rom-3-8-sila-oneui-5-1-1-full-port-10-23-patches-22-10-2023-sm-n960f-fd-n-sm-g96xf-fd-n.4244747/post-89180544"}, // rom slot 6
       {name:"", version:"", maintainer:"", status:"active", note:"", link:""}, // rom slot 7
       {name:"", version:"", maintainer:"", status:"active", note:"", link:""}, // rom slot 8
       {name:"", version:"", maintainer:"", status:"active", note:"", link:""}, // rom slot 9
@@ -643,7 +683,7 @@ const DEVICES = [
   },
   {
     // ===== DEVICE 9 =====
-    id:"device-09", brand:"Google", name:"Pixel 6 Pro", codename:"Raven",maintainer:"",
+    id:"device-09", brand:"Google", name:"Pixel 6 Pro", codename:"Raven",maintainer:"", image:"images/raven.jpg", // phone photo URL
     chipset:"Google Tensor", released:"Oct 2021", status:"active",
     roms:[
       {name:"", version:"", maintainer:"", status:"active", note:"", link:""}, // rom slot 1
@@ -664,7 +704,7 @@ const DEVICES = [
   },
   {
     // ===== DEVICE 10 =====
-    id:"device-10", brand:"OnePlus", name:"OnePlus 8", codename:"instantnoodle",maintainer:"",
+    id:"device-10", brand:"OnePlus", name:"OnePlus 8", codename:"instantnoodle",maintainer:"", image:"images/oneplus8.jpg", // phone photo URL
     chipset:"Snapdragon 865", released:"Apr 2020", status:"active",
     roms:[
       {name:"", version:"", maintainer:"", status:"active", note:"", link:""}, // rom slot 1
@@ -685,7 +725,7 @@ const DEVICES = [
   },
   {
     // ===== DEVICE 11 =====
-    id:"device-11", brand:"Xiaomi", name:"Redmi Note 8  ", codename:"Ginkgo",maintainer:"@Dinosaurtech_",
+    id:"device-11", brand:"Xiaomi", name:"Redmi Note 8  ", codename:"Ginkgo",maintainer:"@Dinosaurtech_", image:"images/ginkgo.jpg", // phone photo URL
     chipset:"Snapdragon 665", released:"Sept 2019", status:"active",
     roms:[
       {name:"", version:"", maintainer:"", status:"active", note:"", link:""}, // rom slot 1
@@ -706,7 +746,7 @@ const DEVICES = [
   },
   {
     // ===== DEVICE 12 =====
-    id:"device-12", brand:"", name:"", codename:"",maintainer:"",
+    id:"device-12", brand:"Samsung", name:"Galaxy S5", codename:"klte",maintainer:"", image:"images/s5.jpg", // phone photo URL
     chipset:"", released:"", status:"active",
     roms:[
       {name:"", version:"", maintainer:"", status:"active", note:"", link:""}, // rom slot 1
@@ -727,7 +767,7 @@ const DEVICES = [
   },
   {
     // ===== DEVICE 13 =====
-    id:"device-13", brand:"", name:"", codename:"",maintainer:"",
+    id:"device-13", brand:"", name:"", codename:"",maintainer:"", image:"", // phone photo URL
     chipset:"", released:"", status:"active",
     roms:[
       {name:"", version:"", maintainer:"", status:"active", note:"", link:""}, // rom slot 1
@@ -748,7 +788,7 @@ const DEVICES = [
   },
   {
     // ===== DEVICE 14 =====
-    id:"device-14", brand:"", name:"", codename:"",maintainer:"",
+    id:"device-14", brand:"", name:"", codename:"",maintainer:"", image:"", // phone photo URL
     chipset:"", released:"", status:"active",
     roms:[
       {name:"", version:"", maintainer:"", status:"active", note:"", link:""}, // rom slot 1
@@ -769,7 +809,7 @@ const DEVICES = [
   },
   {
     // ===== DEVICE 15 =====
-    id:"device-15", brand:"", name:"", codename:"",maintainer:"",
+    id:"device-15", brand:"", name:"", codename:"",maintainer:"", image:"", // phone photo URL
     chipset:"", released:"", status:"active",
     roms:[
       {name:"", version:"", maintainer:"", status:"active", note:"", link:""}, // rom slot 1
@@ -842,6 +882,7 @@ function renderGrid(){
         <span class="dc-brand">${displayBrand}</span>
         <span class="status-dot status-${d.status||'active'}" title="${statusLabel(d.status)}"></span>
       </div>
+      <div class="dc-thumb">${d.image && d.image.trim()!=="" ? `<img src="${d.image}" alt="${displayName}">` : `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="7" y="2" width="10" height="20" rx="2"/><line x1="11" y1="18" x2="13" y2="18"/></svg>`}</div>
       <div class="dc-name">${displayName}</div>
       <div class="dc-codename">${d.codename && d.codename.trim() !== "" ? d.codename : "—"}</div>
       <div class="dc-maintainer">${d.maintainer && d.maintainer.trim() !== "" ? d.maintainer : "—"}</div>
@@ -865,16 +906,22 @@ function renderDetail(d){
   const displayName = d.name && d.name.trim() !== "" ? d.name : "Untitled device";
   const displayBrand = d.brand && d.brand.trim() !== "" ? d.brand : "—";
   const displayCodename = d.codename && d.codename.trim() !== "" ? d.codename : "—";
+  const shouldShowAddons = ['device-03'].includes(d.id);
+  
+
   view.innerHTML = `
     <div class="back-link" onclick="goHome()">← back to all devices</div>
     <div class="detail-header reveal" style="--reveal-delay:0s">
-      <div class="detail-eyebrow">${displayBrand}</div>
-      <h1 class="detail-title">${displayName}</h1>
-      <div class="detail-codename">codename: ${displayCodename}</div>
-      <div class="spec-row">
-        <div class="spec"><div class="k">Chipset</div><div class="v">${d.chipset && d.chipset.trim()!=="" ? d.chipset : "—"}</div></div>
-        <div class="spec"><div class="k">Released</div><div class="v">${d.released && d.released.trim()!=="" ? d.released : "—"}</div></div>
-        <div class="spec"><div class="k">Status</div><div class="v">${statusLabel(d.status)}</div></div>
+      <div class="detail-thumb">${d.image && d.image.trim()!=="" ? `<img src="${d.image}" alt="${displayName}">` : `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="7" y="2" width="10" height="20" rx="2"/><line x1="11" y1="18" x2="13" y2="18"/></svg>`}</div>
+      <div class="detail-header-inner">
+        <div class="detail-eyebrow">${displayBrand}</div>
+        <h1 class="detail-title">${displayName}</h1>
+        <div class="detail-codename">codename: ${displayCodename}</div>
+        <div class="spec-row">
+          <div class="spec"><div class="k">Chipset</div><div class="v">${d.chipset && d.chipset.trim()!=="" ? d.chipset : "—"}</div></div>
+          <div class="spec"><div class="k">Released</div><div class="v">${d.released && d.released.trim()!=="" ? d.released : "—"}</div></div>
+          <div class="spec"><div class="k">Status</div><div class="v">${statusLabel(d.status)}</div></div>
+        </div>
       </div>
     </div>
 
@@ -931,6 +978,31 @@ function renderDetail(d){
         </div>`;
       }).join('')}
     </div>
+
+    ${shouldShowAddons ? `
+      <div class="rom-section-title" style="margin-top:34px;">add-ons</div>
+      <div class="rom-list">
+        ${(d.addons||[]).map((r,i)=>{
+          const delay = Math.min(i,8) * 0.05;
+          const hasLink = r.link && r.link.trim() !== "";
+          const hasDetails = r.version || r.maintainer || r.note || hasLink;
+          return `
+          <div class="rom-item reveal" style="--reveal-delay:${delay}s${hasDetails ? '' : '; --reveal-opacity:0.55'}">
+            <div class="rom-left">
+              <span class="rom-name">${r.name}</span>
+              <span class="rom-badges">
+                ${r.version ? `<span class="badge">${r.version}</span>` : ''}
+                <span class="badge status-${r.status||'active'}">${statusLabel(r.status)}</span>
+              </span>
+              ${(r.maintainer || r.note) ? `<span class="rom-sub">${[r.maintainer, r.note].filter(Boolean).join(' — ')}</span>` : ''}
+            </div>
+            ${hasLink
+              ? `<a class="rom-link" href="${r.link}" target="_blank" rel="noopener noreferrer">Official Maintainer link ↗</a>`
+              : `<span class="rom-link disabled">no link yet</span>`}
+          </div>`;
+        }).join('')}
+      </div>
+    ` : ''}
 
     <div class="disclaimer reveal"><b>Before you flash:</b> do this just if u know what you're doing bro, verify the build matches your exact model/variant, and read the source thread in full — bricking a device is rare but always possible with third-party firmware.</div>
   `;
@@ -990,7 +1062,7 @@ initScrollReveal();
 (function(){
   var loader = document.getElementById('loading-screen');
   if(!loader) return;
-  var MIN_DISPLAY_MS = 1350; // lets the slash / G / spinner intro play out
+  var MIN_DISPLAY_MS = 3400; // lets the slash / G / bot intro play out longer
   var start = Date.now();
   function dismiss(){
     var elapsed = Date.now() - start;
